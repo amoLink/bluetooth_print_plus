@@ -1,0 +1,57 @@
+group 'com.example.bluetooth_print_plus.bluetooth_print_plus'
+version '1.0'
+
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:7.3.0'
+    }
+}
+
+rootProject.allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 31
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    defaultConfig {
+        minSdkVersion 21
+    }
+
+    dependencies {
+        testImplementation 'junit:junit:4.13.2'
+        testImplementation 'org.mockito:mockito-core:5.0.0'
+    }
+
+    testOptions {
+        unitTests.all {
+            testLogging {
+               events "passed", "skipped", "failed", "standardOut", "standardError"
+               outputs.upToDateWhen {false}
+               showStandardStreams = true
+            }
+        }
+    }
+}
+
+dependencies {
+    implementation files('libs/SDKLib.jar')
+    implementation "androidx.core:core:1.6.0"
+}
+
+

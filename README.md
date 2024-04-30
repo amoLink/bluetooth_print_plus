@@ -1,2 +1,15 @@
 # bluetooth_print_plus
-a flutter plugin connect to bluetooth thermal printer support both Android and IOS (eg. Gprinter pt-380、gp-1324、gp-2120)
+
+A new Flutter project.
+
+## Getting Started
+
+This project is a starting point for a Flutter
+[plug-in package](https://flutter.dev/developing-packages/),
+a specialized package that includes platform-specific implementation code for
+Android and/or iOS.
+
+For help getting started with Flutter development, view the
+[online documentation](https://flutter.dev/docs), which offers tutorials,
+samples, guidance on mobile development, and a full API reference.
+
