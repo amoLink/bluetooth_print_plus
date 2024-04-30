@@ -30,7 +30,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> with  WidgetsBindingObserver {
-  final _bluetoothPrintPlusPlugin = BluetoothPrintPlus.instance;
+  final _bluetoothPrintPlus = BluetoothPrintPlus.instance;
   bool _connected = false;
   BluetoothDevice? _device;
 
@@ -42,8 +42,8 @@ class _HomePageState extends State<HomePage> with  WidgetsBindingObserver {
   }
 
   Future<void> initBluetooth() async {
-    bool isConnected = await _bluetoothPrintPlusPlugin.isConnected ?? false;
-    _bluetoothPrintPlusPlugin.state.listen((state) {
+    bool isConnected = await _bluetoothPrintPlus.isConnected ?? false;
+    _bluetoothPrintPlus.state.listen((state) {
       print('******************* cur device status: $state');
       switch (state) {
         case BluetoothPrintPlus.CONNECTED:
@@ -90,7 +90,7 @@ class _HomePageState extends State<HomePage> with  WidgetsBindingObserver {
           children: [
             Expanded(
                 child: StreamBuilder<List<BluetoothDevice>>(
-                  stream: _bluetoothPrintPlusPlugin.scanResults,
+                  stream: _bluetoothPrintPlus.scanResults,
                   initialData: [],
                   builder: (c, snapshot) => ListView(
                     children: snapshot.data!.map((d) => Container(
@@ -118,8 +118,8 @@ class _HomePageState extends State<HomePage> with  WidgetsBindingObserver {
                               const SizedBox(width: 10,),
                               ElevatedButton(
                                   onPressed: () async {
-                                      _bluetoothPrintPlusPlugin.stopScan();
-                                      _bluetoothPrintPlusPlugin.connect(d);
+                                      _bluetoothPrintPlus.stopScan();
+                                      _bluetoothPrintPlus.connect(d);
                                       _device = d;
                                   },
                                   child: const Text("connect"),
@@ -140,8 +140,8 @@ class _HomePageState extends State<HomePage> with  WidgetsBindingObserver {
                   style: TextStyle(fontSize: 16)
                 ),
                 onPressed: () {
-                  _bluetoothPrintPlusPlugin.isAvailable;
-                  _bluetoothPrintPlusPlugin.startScan(timeout: const Duration(seconds: 30));
+                  _bluetoothPrintPlus.isAvailable;
+                  _bluetoothPrintPlus.startScan(timeout: const Duration(seconds: 30));
                 },
               ),
             )
