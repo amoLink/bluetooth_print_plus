@@ -208,7 +208,7 @@ info.plist add:
 ## FAQ Support 
 you can join this [QQ](https://im.qq.com/index.shtml) group or join [TG group](https://t.me/+a7KAkNjHFS81MGNi),  feedback your problem 
 
-<img src="qqGroup.JPG">
+<img src="qqGroup.jpg">
 
 ## Buy me a coffee
 <img src="buy_me_a_coffee.png">
