@@ -1,3 +1,4 @@
+[![pub package](https://img.shields.io/pub/v/bluetooth_print_plus.svg)](https://pub.dartlang.org/packages/bluetooth_print_plus)
 
 ## Introduction
 
