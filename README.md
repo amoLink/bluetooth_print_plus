@@ -30,13 +30,10 @@ BluetoothPrint is a bluetooth plugin for [Flutter](https://flutter.dev), a new m
 | cls      | :white_check_mark: | :white_check_mark: | Clear data from image buffer                                 |
 | text     | :white_check_mark: | :white_check_mark: | print string                                                 |
 | image    | :white_check_mark: | :white_check_mark: | print image                                                  |
-
-|         | Android            | iOS                | Description                                                  |
-| ------- | ------------------ | ------------------ | ------------------------------------------------------------ |
-| barCode | :white_check_mark: | :white_check_mark: | This instruction is used to draw one-dimensional barcodes    |
-| qrCode  | :white_check_mark: | :white_check_mark: | This instruction is used to print QR codes                   |
-| bar     | :white_check_mark: | :white_check_mark: | This instruction is used to draw lines on labels             |
-| box     | :white_check_mark: | :white_check_mark: | This instruction is used to draw a rectangular box on a label |
+| barCode  | :white_check_mark: | :white_check_mark: | This instruction is used to draw one-dimensional barcodes    |
+| qrCode   | :white_check_mark: | :white_check_mark: | This instruction is used to print QR codes                   |
+| bar      | :white_check_mark: | :white_check_mark: | This instruction is used to draw lines on labels             |
+| box      | :white_check_mark: | :white_check_mark: | This instruction is used to draw a rectangular box on a label |
 
 
 
@@ -208,10 +205,15 @@ info.plist add:
 </array>
 ```
 
-## FAQ Support
-you can join this [QQ](https://im.qq.com/index.shtml) group, feedback your problem 
+## FAQ Support 
+you can join this [QQ](https://im.qq.com/index.shtml) group or join [TG group](https://t.me/+a7KAkNjHFS81MGNi),  feedback your problem 
 
-<img src="assets/bluetooth_print.png">
+<img src="qqGroup.JPG">
+
+## Buy me a coffee
+<img src="buy_me_a_coffee.png">
+
+
 
 ## Thanks For
 - [flutter_blue](https://github.com/pauldemarco/flutter_blue)
