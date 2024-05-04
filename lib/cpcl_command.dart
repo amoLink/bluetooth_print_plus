@@ -1,13 +1,16 @@
 
+
+import 'dart:ffi';
+
 import 'package:flutter/services.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'enum.dart';
 
-class TscCommand extends PlatformInterface {
-  final methodChannel = const MethodChannel('bluetooth_print_plus_tsc');
+class CpclCommand extends PlatformInterface {
+  final methodChannel = const MethodChannel('bluetooth_print_plus_cpcl');
   static final Object _token = Object();
 
-  TscCommand() : super(token: _token);
+  CpclCommand() : super(token: _token);
 
   Future<void> cleanCommand() async {
     await methodChannel.invokeMethod<void>('cleanCommand');
