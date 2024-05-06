@@ -3,6 +3,7 @@
 #import "EscCommand.h"
 #import "TscCommand.h"
 #import "TscCommandPlugin.h"
+#import "CpclCommandPlugin.h"
 
 @interface BluetoothPrintPlusPlugin ()
 @property(nonatomic, retain) NSObject<FlutterPluginRegistrar> *registrar;
@@ -39,6 +40,10 @@
     FlutterMethodChannel *tscChannel = [FlutterMethodChannel methodChannelWithName:@"bluetooth_print_plus_tsc" binaryMessenger:[registrar messenger]];
     TscCommandPlugin *tsc = [[TscCommandPlugin alloc] init];
     [registrar addMethodCallDelegate:tsc channel:tscChannel];
+    
+    FlutterMethodChannel *cpclChannel = [FlutterMethodChannel methodChannelWithName:@"bluetooth_print_plus_cpcl" binaryMessenger:[registrar messenger]];
+    CpclCommandPlugin *cpcl = [CpclCommandPlugin new];
+    [registrar addMethodCallDelegate:cpcl channel:cpclChannel];
 }
 
 - (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {

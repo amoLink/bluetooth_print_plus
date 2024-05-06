@@ -60,6 +60,7 @@ public class BluetoothPrintPlusPlugin implements FlutterPlugin, ActivityAware, M
   private static final String NAMESPACE = "bluetooth_print_plus";
   private MethodChannel channel;
   private MethodChannel tscChannel;
+  private MethodChannel cpclChannel;
   private EventChannel stateChannel;
   private BluetoothManager mBluetoothManager;
   private BluetoothAdapter mBluetoothAdapter;
@@ -74,6 +75,7 @@ public class BluetoothPrintPlusPlugin implements FlutterPlugin, ActivityAware, M
   private static final int REQUEST_FINE_LOCATION_PERMISSIONS = 1452;
 
   private final TscCommandPlugin tscCommandPlugin = new TscCommandPlugin();
+  private final CpclCommandPlugin cpclCommandPlugin = new CpclCommandPlugin();
 
   private static String[] PERMISSIONS_LOCATION = {
           Manifest.permission.BLUETOOTH,
@@ -149,6 +151,9 @@ public class BluetoothPrintPlusPlugin implements FlutterPlugin, ActivityAware, M
 
       tscChannel = new MethodChannel(messenger, "bluetooth_print_plus_tsc");
       tscCommandPlugin.setUpChannel(tscChannel);
+
+      cpclChannel = new MethodChannel(messenger, "bluetooth_print_plus_cpcl");
+      cpclCommandPlugin.setUpChannel(cpclChannel);
 
       stateChannel = new EventChannel(messenger, NAMESPACE + "/state");
       stateChannel.setStreamHandler(stateHandler);

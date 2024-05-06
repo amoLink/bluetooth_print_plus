@@ -1,6 +1,7 @@
 
 import 'package:bluetooth_print_plus/bluetooth_print_model.dart';
 import 'package:bluetooth_print_plus/bluetooth_print_plus.dart';
+import 'package:bluetooth_print_plus/cpcl_command.dart';
 import 'package:bluetooth_print_plus/tsp_command.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -15,6 +16,8 @@ class FunctionPage extends StatefulWidget {
 
 class _FunctionPageState extends State<FunctionPage> {
   final tscCommand = TscCommand();
+  final cpclCommand = CpclCommand();
+  int groupValue = 0;
 
   @override
   void dispose() {
@@ -33,6 +36,8 @@ class _FunctionPageState extends State<FunctionPage> {
       ),
       body: Column(
         children: [
+          buildRadioGroupRowWidget(),
+          const SizedBox(height: 20,),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
@@ -56,12 +61,23 @@ class _FunctionPageState extends State<FunctionPage> {
                   onPressed: () async {
                     final ByteData bytes = await rootBundle.load("assets/dithered-image.png");
                     final Uint8List image = bytes.buffer.asUint8List();
-                    await tscCommand.cleanCommand();
-                    await tscCommand.cls();
-                    await tscCommand.size(width: 76, height: 130);
-                    await tscCommand.image(image: image, x: 50, y: 60);
-                    await tscCommand.print(1);
-                    final cmd = await tscCommand.getCommand();
+                    if (groupValue == 0) {
+                      await tscCommand.cleanCommand();
+                      await tscCommand.cls();
+                      await tscCommand.size(width: 76, height: 130);
+                      await tscCommand.image(image: image, x: 50, y: 60);
+                      await tscCommand.print(1);
+                      final cmd = await tscCommand.getCommand();
+                      if (cmd == null) return;
+                      BluetoothPrintPlus.instance.write(cmd);
+                      print("getCommand $cmd");
+                      return;
+                    }
+                    await cpclCommand.cleanCommand();
+                    await cpclCommand.size(width: 76, height: 130);
+                    await cpclCommand.image(image: image, x: 10, y: 10);
+                    await cpclCommand.print();
+                    final cmd = await cpclCommand.getCommand();
                     if (cmd == null) return;
                     BluetoothPrintPlus.instance.write(cmd);
                     print("getCommand $cmd");
@@ -129,6 +145,44 @@ class _FunctionPageState extends State<FunctionPage> {
           )
         ],
       ),
+    );
+  }
+
+  Row buildRadioGroupRowWidget() {
+    return Row(
+      children: [
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text("command type"),
+            Radio(
+              value: 0,
+              groupValue: groupValue,
+              onChanged: (v) {
+                setState(() {
+                  groupValue = v!;
+                });
+              },
+            ),
+            const Text("tsc")
+          ],
+        ),
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Radio(
+              value: 1,
+              groupValue: groupValue,
+              onChanged: (v) {
+                setState(() {
+                  groupValue = v!;
+                });
+              },
+            ),
+            const Text("cpcl")
+          ],
+        ),
+      ],
     );
   }
 }
