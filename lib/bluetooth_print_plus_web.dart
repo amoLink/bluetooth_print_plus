@@ -5,10 +5,10 @@
 
 // import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 
-import 'bluetooth_print_plus_platform_interface.dart';
+// import 'bluetooth_print_plus_platform_interface.dart';
 
 /// A web implementation of the BluetoothPrintPlusPlatform of the BluetoothPrintPlus plugin.
-class BluetoothPrintPlusWeb extends BluetoothPrintPlusPlatform {
+class BluetoothPrintPlusWeb {
   /// Constructs a BluetoothPrintPlusWeb
   BluetoothPrintPlusWeb();
 

@@ -1,11 +1,10 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:bluetooth_print_plus/bluetooth_print_plus_method_channel.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  MethodChannelBluetoothPrintPlus platform = MethodChannelBluetoothPrintPlus();
+  // MethodChannelBluetoothPrintPlus platform = MethodChannelBluetoothPrintPlus();
   const MethodChannel channel = MethodChannel('bluetooth_print_plus');
 
   setUp(() {
@@ -21,7 +20,4 @@ void main() {
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(channel, null);
   });
 
-  test('getPlatformVersion', () async {
-    expect(await platform.getPlatformVersion(), '42');
-  });
 }

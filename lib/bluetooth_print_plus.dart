@@ -5,7 +5,6 @@ import 'package:flutter/services.dart';
 import 'package:rxdart/rxdart.dart';
 
 import 'bluetooth_print_model.dart';
-import 'bluetooth_print_plus_platform_interface.dart';
 
 class BluetoothPrintPlus {
   BluetoothPrintPlus._() {
@@ -135,7 +134,4 @@ class BluetoothPrintPlus {
     await _channel.invokeMethod('write', {"data": data});
   }
 
-  Future<String?> getPlatformVersion() {
-    return BluetoothPrintPlusPlatform.instance.getPlatformVersion();
-  }
 }
