@@ -29,4 +29,3 @@ Map<String, dynamic> _$BluetoothDeviceToJson(BluetoothDevice instance) {
   writeNotNull('connected', instance.connected);
   return val;
 }
-

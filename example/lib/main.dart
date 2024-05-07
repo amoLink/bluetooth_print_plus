@@ -29,7 +29,7 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> with  WidgetsBindingObserver {
+class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   final _bluetoothPrintPlus = BluetoothPrintPlus.instance;
   bool _connected = false;
   BluetoothDevice? _device;
@@ -51,12 +51,9 @@ class _HomePageState extends State<HomePage> with  WidgetsBindingObserver {
             _connected = true;
             // tips = 'connect success';
             if (_device == null) return;
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (ctx) {
-                  return FunctionPage(_device!);
-                }
-            ));
+            Navigator.of(context).push(MaterialPageRoute(builder: (ctx) {
+              return FunctionPage(_device!);
+            }));
           });
           break;
         case BluetoothPrintPlus.DISCONNECTED:
@@ -72,7 +69,7 @@ class _HomePageState extends State<HomePage> with  WidgetsBindingObserver {
 
     if (!mounted) return;
 
-    if(isConnected) {
+    if (isConnected) {
       setState(() {
         _connected = true;
       });
@@ -90,58 +87,57 @@ class _HomePageState extends State<HomePage> with  WidgetsBindingObserver {
           children: [
             Expanded(
                 child: StreamBuilder<List<BluetoothDevice>>(
-                  stream: _bluetoothPrintPlus.scanResults,
-                  initialData: [],
-                  builder: (c, snapshot) => ListView(
-                    children: snapshot.data!.map((d) => Container(
-                      padding: const EdgeInsets.only(left: 10, right: 10, bottom: 5),
-                      child: Row(
+              stream: _bluetoothPrintPlus.scanResults,
+              initialData: [],
+              builder: (c, snapshot) => ListView(
+                children: snapshot.data!
+                    .map((d) => Container(
+                          padding: const EdgeInsets.only(
+                              left: 10, right: 10, bottom: 5),
+                          child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Expanded(
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(d.name ?? ''),
-                                      Text(
-                                        d.address ?? 'null',
-                                        overflow: TextOverflow.ellipsis,
-                                        style: const TextStyle(
-                                            fontSize: 12,
-                                            color: Colors.grey
-                                        ),
-                                      ),
-                                      const Divider(),
-                                    ],
-                                  )
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(d.name ?? ''),
+                                  Text(
+                                    d.address ?? 'null',
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                        fontSize: 12, color: Colors.grey),
+                                  ),
+                                  const Divider(),
+                                ],
+                              )),
+                              const SizedBox(
+                                width: 10,
                               ),
-                              const SizedBox(width: 10,),
                               ElevatedButton(
-                                  onPressed: () async {
-                                      _bluetoothPrintPlus.stopScan();
-                                      _bluetoothPrintPlus.connect(d);
-                                      _device = d;
-                                  },
-                                  child: const Text("connect"),
+                                onPressed: () async {
+                                  _bluetoothPrintPlus.stopScan();
+                                  _bluetoothPrintPlus.connect(d);
+                                  _device = d;
+                                },
+                                child: const Text("connect"),
                               )
                             ],
                           ),
-                    )).toList(),
-                  ),
-                )
-            ),
+                        ))
+                    .toList(),
+              ),
+            )),
             Container(
               padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
               width: double.infinity,
               height: 60,
               child: ElevatedButton(
-                child: const Text(
-                  "Search",
-                  style: TextStyle(fontSize: 16)
-                ),
+                child: const Text("Search", style: TextStyle(fontSize: 16)),
                 onPressed: () {
                   _bluetoothPrintPlus.isAvailable;
-                  _bluetoothPrintPlus.startScan(timeout: const Duration(seconds: 30));
+                  _bluetoothPrintPlus.startScan(
+                      timeout: const Duration(seconds: 30));
                 },
               ),
             )

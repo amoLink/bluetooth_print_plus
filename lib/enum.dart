@@ -1,11 +1,4 @@
-
-
-enum Rotation {
-  r_0,
-  r_90,
-  r_180,
-  r_270
-}
+enum Rotation { r_0, r_90, r_180, r_270 }
 
 enum BarCodeType {
   c_128,

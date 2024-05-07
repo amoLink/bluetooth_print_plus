@@ -1,4 +1,3 @@
-
 import 'package:bluetooth_print_plus/bluetooth_print_model.dart';
 import 'package:bluetooth_print_plus/bluetooth_print_plus.dart';
 import 'package:bluetooth_print_plus/cpcl_command.dart';
@@ -39,21 +38,22 @@ class _FunctionPageState extends State<FunctionPage> {
       body: Column(
         children: [
           buildRadioGroupRowWidget(),
-          const SizedBox(height: 20,),
+          const SizedBox(
+            height: 20,
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               ElevatedButton(
-                onPressed: () async {
-                  await tscCommand.cleanCommand();
-                  await tscCommand.selfTest();
-                  final cmd = await tscCommand.getCommand();
-                  if (cmd == null) return;
-                  BluetoothPrintPlus.instance.write(cmd);
-                  print("getCommand $cmd");
-                },
-                child: const Text("selfTest")
-              ),
+                  onPressed: () async {
+                    await tscCommand.cleanCommand();
+                    await tscCommand.selfTest();
+                    final cmd = await tscCommand.getCommand();
+                    if (cmd == null) return;
+                    BluetoothPrintPlus.instance.write(cmd);
+                    print("getCommand $cmd");
+                  },
+                  child: const Text("selfTest")),
             ],
           ),
           Row(
@@ -61,7 +61,8 @@ class _FunctionPageState extends State<FunctionPage> {
             children: [
               ElevatedButton(
                   onPressed: () async {
-                    final ByteData bytes = await rootBundle.load("assets/dithered-image.png");
+                    final ByteData bytes =
+                        await rootBundle.load("assets/dithered-image.png");
                     final Uint8List image = bytes.buffer.asUint8List();
                     if (groupValue == 0) {
                       await tscCommand.cleanCommand();
@@ -74,7 +75,7 @@ class _FunctionPageState extends State<FunctionPage> {
                       BluetoothPrintPlus.instance.write(cmd);
                       print("get tsc Command $cmd");
                       return;
-                    } else if(groupValue == 1) {
+                    } else if (groupValue == 1) {
                       await cpclCommand.cleanCommand();
                       await cpclCommand.size(width: 76, height: 130);
                       await cpclCommand.image(image: image, x: 10, y: 10);
@@ -93,10 +94,8 @@ class _FunctionPageState extends State<FunctionPage> {
                       BluetoothPrintPlus.instance.write(cmd);
                       print("get esc Command $cmd");
                     }
-
                   },
-                  child: const Text("image")
-              ),
+                  child: const Text("image")),
             ],
           ),
           Row(
@@ -115,26 +114,23 @@ class _FunctionPageState extends State<FunctionPage> {
                       y: 10,
                     );
                     await tscCommand.text(
-                      content: "竹杖芒鞋轻胜马，谁怕？",
-                      x: 10,
-                      y: 60,
-                      xMulti: 2,
-                      yMulti: 2
-                    );
+                        content: "竹杖芒鞋轻胜马，谁怕？",
+                        x: 10,
+                        y: 60,
+                        xMulti: 2,
+                        yMulti: 2);
                     await tscCommand.text(
-                      content: "一蓑烟雨任平生。",
-                      x: 10,
-                      y: 170,
-                      xMulti: 3,
-                      yMulti: 3
-                    );
+                        content: "一蓑烟雨任平生。",
+                        x: 10,
+                        y: 170,
+                        xMulti: 3,
+                        yMulti: 3);
                     await tscCommand.qrCode(
-                      // content: "料峭春风吹酒醒，微冷，山头斜照却相迎。",
-                      content: "28938928",
-                      x: 50,
-                      y: 350,
-                      cellWidth: 3
-                    );
+                        // content: "料峭春风吹酒醒，微冷，山头斜照却相迎。",
+                        content: "28938928",
+                        x: 50,
+                        y: 350,
+                        cellWidth: 3);
                     await tscCommand.qrCode(
                       // content: "回首向来萧瑟处，归去，也无风雨也无晴。",
                       content: "28938928",
@@ -152,8 +148,7 @@ class _FunctionPageState extends State<FunctionPage> {
                     BluetoothPrintPlus.instance.write(cmd);
                     print("getCommand $cmd");
                   },
-                  child: const Text("text/QR_code/barcode")
-              ),
+                  child: const Text("text/QR_code/barcode")),
             ],
           )
         ],

@@ -1,4 +1,3 @@
-
 import 'package:flutter/services.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'enum.dart';
@@ -37,10 +36,7 @@ class TscCommand extends PlatformInterface {
     await methodChannel.invokeMethod<void>('density', params);
   }
 
-  Future<void> size({
-    int width = 0,
-    int height = 0
-  }) async {
+  Future<void> size({int width = 0, int height = 0}) async {
     Map<String, dynamic> params = {"width": width, "height": height};
     await methodChannel.invokeMethod<void>('size', params);
   }
@@ -70,11 +66,7 @@ class TscCommand extends PlatformInterface {
     int x = 0,
     int y = 0,
   }) async {
-    Map<String, dynamic> params = {
-      "x": x,
-      "y": y,
-      "image": image
-    };
+    Map<String, dynamic> params = {"x": x, "y": y, "image": image};
     await methodChannel.invokeMethod<void>('image', params);
   }
 
@@ -96,17 +88,16 @@ class TscCommand extends PlatformInterface {
     await methodChannel.invokeMethod<void>('qrCode', params);
   }
 
-  Future<void> barCode({
-    required String content,
-    int x = 0,
-    int y = 0,
-    BarCodeType codeType = BarCodeType.c_128,
-    Rotation rotation = Rotation.r_0,
-    int height = 100,
-    bool readable = true,
-    int narrow = 2,
-    int wide = 4
-  }) async {
+  Future<void> barCode(
+      {required String content,
+      int x = 0,
+      int y = 0,
+      BarCodeType codeType = BarCodeType.c_128,
+      Rotation rotation = Rotation.r_0,
+      int height = 100,
+      bool readable = true,
+      int narrow = 2,
+      int wide = 4}) async {
     Map<String, dynamic> params = {
       "content": content,
       "x": x,
@@ -136,13 +127,12 @@ class TscCommand extends PlatformInterface {
     await methodChannel.invokeMethod<void>('bar', params);
   }
 
-  Future<void> box({
-    required int startX,
-    required int startY,
-    required int endX,
-    required int endY,
-    int linThickness = 2
-  }) async {
+  Future<void> box(
+      {required int startX,
+      required int startY,
+      required int endX,
+      required int endY,
+      int linThickness = 2}) async {
     Map<String, dynamic> params = {
       "startX": startX,
       "startY": startY,
@@ -163,7 +153,7 @@ class TscCommand extends PlatformInterface {
   }
 
   int _getRotation(Rotation rotation) {
-    switch(rotation) {
+    switch (rotation) {
       case Rotation.r_0:
         return 0;
       case Rotation.r_90:
@@ -176,7 +166,7 @@ class TscCommand extends PlatformInterface {
   }
 
   String _getCodeType(BarCodeType codeType) {
-    switch(codeType) {
+    switch (codeType) {
       case BarCodeType.c_128:
         return "128";
       case BarCodeType.c_39:

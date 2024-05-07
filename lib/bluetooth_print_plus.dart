@@ -1,4 +1,3 @@
-
 import 'dart:async';
 
 import 'package:flutter/services.dart';
@@ -21,12 +20,13 @@ class BluetoothPrintPlus {
   static const int CONNECTED = 1;
   static const int DISCONNECTED = 0;
 
-  static const MethodChannel _channel = MethodChannel("bluetooth_print_plus/methods");
+  static const MethodChannel _channel =
+      MethodChannel("bluetooth_print_plus/methods");
   static const EventChannel _stateChannel = EventChannel('$NAMESPACE/state');
 
   Stream<MethodCall> get _methodStream => _methodStreamController.stream;
   final StreamController<MethodCall> _methodStreamController =
-  StreamController.broadcast();
+      StreamController.broadcast();
 
   Future<bool> get isAvailable async =>
       await _channel.invokeMethod('isAvailable').then<bool>((d) => d);
@@ -41,7 +41,8 @@ class BluetoothPrintPlus {
 
   Stream<bool> get isScanning => _isScanning.stream;
 
-  BehaviorSubject<List<BluetoothDevice>> _scanResults = BehaviorSubject.seeded([]);
+  BehaviorSubject<List<BluetoothDevice>> _scanResults =
+      BehaviorSubject.seeded([]);
 
   Stream<List<BluetoothDevice>> get scanResults => _scanResults.stream;
 
@@ -133,5 +134,4 @@ class BluetoothPrintPlus {
   Future<dynamic> write(Uint8List data) async {
     await _channel.invokeMethod('write', {"data": data});
   }
-
 }

@@ -1,4 +1,3 @@
-
 import 'package:flutter/services.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
@@ -17,12 +16,12 @@ class CpclCommand extends PlatformInterface {
     return command;
   }
 
-  Future<void> size({
-    required width,
-    required height,
-    int copies = 1
-  }) async {
-    Map<String, dynamic> params = {"width": width, "height": height, "copies": copies};
+  Future<void> size({required width, required height, int copies = 1}) async {
+    Map<String, dynamic> params = {
+      "width": width,
+      "height": height,
+      "copies": copies
+    };
     await methodChannel.invokeMethod<void>('size', params);
   }
 
@@ -31,19 +30,13 @@ class CpclCommand extends PlatformInterface {
     int x = 0,
     int y = 0,
   }) async {
-    Map<String, dynamic> params = {
-      "x": x,
-      "y": y,
-      "image": image
-    };
+    Map<String, dynamic> params = {"x": x, "y": y, "image": image};
     await methodChannel.invokeMethod<void>('image', params);
   }
 
   Future<void> print() async {
     await methodChannel.invokeMethod<void>('print');
   }
-
-
 
   // int _getRotation(Rotation rotation) {
   //   switch(rotation) {

@@ -1,4 +1,3 @@
-
 import 'package:bluetooth_print_plus/enum.dart';
 import 'package:bluetooth_print_plus/tsp_command.dart';
 import 'package:flutter/services.dart';
@@ -13,9 +12,7 @@ void test() async {
       y: 20,
       xMulti: 2,
       yMulti: 3,
-      rotation: Rotation.r_180
-  );
-
+      rotation: Rotation.r_180);
 
   final ByteData bytes = await rootBundle.load("assets/art5043800863.jpg");
   final Uint8List image = bytes.buffer.asUint8List();
