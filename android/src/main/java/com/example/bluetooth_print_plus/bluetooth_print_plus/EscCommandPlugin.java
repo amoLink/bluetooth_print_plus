@@ -5,8 +5,7 @@ import android.graphics.BitmapFactory;
 
 import androidx.annotation.NonNull;
 
-import com.gprinter.command.CpclCommand;
-import com.gprinter.command.LabelCommand;
+import com.gprinter.command.EscCommand;
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.plugin.common.MethodCall;
@@ -16,12 +15,19 @@ import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugin.common.PluginRegistry.RequestPermissionsResultListener;
 
 
-public class CpclCommandPlugin implements FlutterPlugin, MethodCallHandler, RequestPermissionsResultListener {
+public class EscCommandPlugin implements FlutterPlugin, MethodCallHandler, RequestPermissionsResultListener {
     public MethodChannel channel;
-    private static final String TAG = "BluetoothPrintPlusPlugin-TSC";
+    private static final String TAG = "BluetoothPrintPlusPlugin-ESC";
 
-    private final CpclCommand cpclCommand = new CpclCommand();
+    private EscCommand escCommand;
 
+    public EscCommand getEscCommand() {
+        if (escCommand == null) {
+            escCommand = new EscCommand();
+            escCommand.addInitializePrinter();
+        }
+        return escCommand;
+    }
 
     public void setUpChannel(MethodChannel channel) {
         this.channel = channel;
@@ -30,7 +36,7 @@ public class CpclCommandPlugin implements FlutterPlugin, MethodCallHandler, Requ
 
     @Override
     public void onAttachedToEngine(@NonNull FlutterPluginBinding binding) {
-        channel = new MethodChannel(binding.getBinaryMessenger(), "bluetooth_print_plus_cpcl");
+        channel = new MethodChannel(binding.getBinaryMessenger(), "bluetooth_print_plus_esc");
         channel.setMethodCallHandler(this);
     }
 
@@ -52,11 +58,11 @@ public class CpclCommandPlugin implements FlutterPlugin, MethodCallHandler, Requ
 
         switch (method) {
             case "cleanCommand":
-                this.cpclCommand.clrCommand();
+                this.escCommand = null;
                 result.success(true);
                 break;
             case "getCommand":
-                Object[] elements = this.cpclCommand.getCommand().toArray();
+                Object[] elements = this.getEscCommand().getCommand().toArray();
                 byte[] datas = new byte[elements.length];
                 for (int i = 0; i < elements.length; i++) {
                     Byte item = (Byte) elements[i];
@@ -65,25 +71,14 @@ public class CpclCommandPlugin implements FlutterPlugin, MethodCallHandler, Requ
                 result.success(datas);
                 break;
             case "print":
-                this.cpclCommand.addPrint();
-                result.success(true);
-                break;
-            case "size":
-                Integer copies = call.argument("copies");
-                assert width != null;
-                assert height != null;
-                assert copies != null;
-                this.cpclCommand.addInitializePrinter(height, copies);
-                this.cpclCommand.addPagewidth(width);
+                this.getEscCommand().addPrintAndFeedLines((byte) 4);
                 result.success(true);
                 break;
             case "image":
                 byte[] bytes = call.argument("image");
                 assert bytes != null;
-                assert x != null;
-                assert y != null;
                 Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                this.cpclCommand.addCGraphics(x, y, bitmap.getWidth(), bitmap);
+                this.getEscCommand().addOriginRastBitImage(bitmap, bitmap.getWidth(), 1);
                 result.success(true);
                 break;
 

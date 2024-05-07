@@ -2,6 +2,7 @@
 import 'package:bluetooth_print_plus/bluetooth_print_model.dart';
 import 'package:bluetooth_print_plus/bluetooth_print_plus.dart';
 import 'package:bluetooth_print_plus/cpcl_command.dart';
+import 'package:bluetooth_print_plus/esc_command.dart';
 import 'package:bluetooth_print_plus/tsp_command.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -17,6 +18,7 @@ class FunctionPage extends StatefulWidget {
 class _FunctionPageState extends State<FunctionPage> {
   final tscCommand = TscCommand();
   final cpclCommand = CpclCommand();
+  final escCommand = EscCommand();
   int groupValue = 0;
 
   @override
@@ -70,17 +72,28 @@ class _FunctionPageState extends State<FunctionPage> {
                       final cmd = await tscCommand.getCommand();
                       if (cmd == null) return;
                       BluetoothPrintPlus.instance.write(cmd);
-                      print("getCommand $cmd");
+                      print("get tsc Command $cmd");
                       return;
+                    } else if(groupValue == 1) {
+                      await cpclCommand.cleanCommand();
+                      await cpclCommand.size(width: 76, height: 130);
+                      await cpclCommand.image(image: image, x: 10, y: 10);
+                      await cpclCommand.print();
+                      final cmd = await cpclCommand.getCommand();
+                      if (cmd == null) return;
+                      BluetoothPrintPlus.instance.write(cmd);
+                      print("get cpcl Command $cmd");
+                    } else {
+                      await escCommand.cleanCommand();
+                      await escCommand.print();
+                      await escCommand.image(image: image);
+                      await escCommand.print();
+                      final cmd = await escCommand.getCommand();
+                      if (cmd == null) return;
+                      BluetoothPrintPlus.instance.write(cmd);
+                      print("get esc Command $cmd");
                     }
-                    await cpclCommand.cleanCommand();
-                    await cpclCommand.size(width: 76, height: 130);
-                    await cpclCommand.image(image: image, x: 10, y: 10);
-                    await cpclCommand.print();
-                    final cmd = await cpclCommand.getCommand();
-                    if (cmd == null) return;
-                    BluetoothPrintPlus.instance.write(cmd);
-                    print("getCommand $cmd");
+
                   },
                   child: const Text("image")
               ),
@@ -180,6 +193,21 @@ class _FunctionPageState extends State<FunctionPage> {
               },
             ),
             const Text("cpcl")
+          ],
+        ),
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Radio(
+              value: 2,
+              groupValue: groupValue,
+              onChanged: (v) {
+                setState(() {
+                  groupValue = v!;
+                });
+              },
+            ),
+            const Text("esc")
           ],
         ),
       ],
