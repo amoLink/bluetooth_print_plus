@@ -1,5 +1,5 @@
 PODS:
-  - bluetooth_print_plus (1.2.0):
+  - bluetooth_print_plus (1.2.1):
     - Flutter
     - GSDK (= 0.0.7)
   - Flutter (1.0.0)

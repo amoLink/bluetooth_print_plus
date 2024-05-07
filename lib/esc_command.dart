@@ -1,7 +1,6 @@
 
 import 'package:flutter/services.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
-import 'enum.dart';
 
 class EscCommand extends PlatformInterface {
   final methodChannel = const MethodChannel('bluetooth_print_plus_esc');
