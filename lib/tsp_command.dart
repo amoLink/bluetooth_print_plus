@@ -1,6 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
-import 'enum.dart';
+import 'enum_tool.dart';
 
 class TscCommand extends PlatformInterface {
   final methodChannel = const MethodChannel('bluetooth_print_plus_tsc');
@@ -49,7 +49,7 @@ class TscCommand extends PlatformInterface {
     int yMulti = 1,
     Rotation rotation = Rotation.r_0,
   }) async {
-    int rota = _getRotation(rotation);
+    int rota = EnumTool.getRotation(rotation);
     Map<String, dynamic> params = {
       "content": content,
       "x": x,
@@ -77,7 +77,7 @@ class TscCommand extends PlatformInterface {
     int cellWidth = 6,
     Rotation rotation = Rotation.r_0,
   }) async {
-    int rota = _getRotation(rotation);
+    int rota = EnumTool.getRotation(rotation);
     Map<String, dynamic> params = {
       "content": content,
       "x": x,
@@ -102,8 +102,8 @@ class TscCommand extends PlatformInterface {
       "content": content,
       "x": x,
       "y": y,
-      "codeType": _getCodeType(codeType),
-      "rotation": _getRotation(rotation),
+      "codeType": EnumTool.getCodeType(codeType),
+      "rotation": EnumTool.getRotation(rotation),
       "height": height,
       "readable": readable,
       "narrow": narrow,
@@ -128,14 +128,14 @@ class TscCommand extends PlatformInterface {
   }
 
   Future<void> box(
-      {required int startX,
-      required int startY,
+      {required int x,
+      required int y,
       required int endX,
       required int endY,
       int linThickness = 2}) async {
     Map<String, dynamic> params = {
-      "startX": startX,
-      "startY": startY,
+      "x": x,
+      "y": y,
       "endX": endX,
       "endY": endY,
       "linThickness": linThickness,
@@ -150,41 +150,5 @@ class TscCommand extends PlatformInterface {
   Future<Uint8List?> getCommand() async {
     final command = await methodChannel.invokeMethod<Uint8List>('getCommand');
     return command;
-  }
-
-  int _getRotation(Rotation rotation) {
-    switch (rotation) {
-      case Rotation.r_0:
-        return 0;
-      case Rotation.r_90:
-        return 90;
-      case Rotation.r_180:
-        return 180;
-      case Rotation.r_270:
-        return 270;
-    }
-  }
-
-  String _getCodeType(BarCodeType codeType) {
-    switch (codeType) {
-      case BarCodeType.c_128:
-        return "128";
-      case BarCodeType.c_39:
-        return "39";
-      case BarCodeType.c_93:
-        return "93";
-      case BarCodeType.c_ITF:
-        return "ITF";
-      case BarCodeType.c_UPCA:
-        return "UPCA";
-      case BarCodeType.c_UPCE:
-        return "UPCE";
-      case BarCodeType.c_CODABAR:
-        return "CODABAR";
-      case BarCodeType.c_EAN8:
-        return "EAN8";
-      case BarCodeType.c_EAN13:
-        return "EAN13";
-    }
   }
 }

@@ -1,5 +1,9 @@
 package com.example.bluetooth_print_plus.bluetooth_print_plus;
 
+import static com.gprinter.command.CpclCommand.COMMAND.BARCODE;
+import static com.gprinter.command.CpclCommand.COMMAND.VBARCODE;
+import static com.gprinter.command.CpclCommand.TEXT_FONT.FONT_3;
+
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
@@ -86,7 +90,54 @@ public class CpclCommandPlugin implements FlutterPlugin, MethodCallHandler, Requ
                 this.cpclCommand.addCGraphics(x, y, bitmap.getWidth(), bitmap);
                 result.success(true);
                 break;
-
+            case "text":
+                Integer xMulti = call.argument("xMulti");
+                Integer yMulti = call.argument("yMulti");
+                Boolean bold = call.argument("bold");
+                assert x != null;
+                assert y != null;
+                assert xMulti != null;
+                assert yMulti != null;
+                assert bold != null;
+                if (bold) {
+                    this.cpclCommand.addSETBOLD(1);
+                }
+                this.cpclCommand.addSetmag(xMulti, yMulti);
+                this.cpclCommand.addText(FONT_3, x, y, content);
+                if (bold) {
+                    this.cpclCommand.addSETBOLD(0);
+                }
+                result.success(true);
+                break;
+            case "qrCode":
+                assert x != null;
+                assert y != null;
+                assert width != null;
+                this.cpclCommand.addBQrcode(x, y, 2, width, content);
+                result.success(true);
+                break;
+            case "barCode":
+                String codeType = call.argument("codeType");
+                Boolean vertical = call.argument("vertical");
+                assert vertical != null;
+                assert height != null;
+                assert x != null;
+                assert y != null;
+                CpclCommand.COMMAND command = vertical ? VBARCODE : BARCODE;
+                this.cpclCommand.addBarcode(command, CpclCommand.CPCLBARCODETYPE.valueOf(codeType), height, x, y, content);
+                result.success(true);
+                break;
+            case "line":
+                Integer endX = call.argument("endX");
+                Integer endY = call.argument("endY");
+                assert x != null;
+                assert y != null;
+                assert endX != null;
+                assert endY != null;
+                assert width != null;
+                this.cpclCommand.addLine(x, y, endX, endY, width);
+                result.success(true);
+                break;
             default:
                 result.notImplemented();
                 break;

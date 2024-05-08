@@ -131,7 +131,7 @@ class BluetoothPrintPlus {
 
   Future<dynamic> destroy() => _channel.invokeMethod('destroy');
 
-  Future<dynamic> write(Uint8List data) async {
+  Future<dynamic> write(Uint8List? data) async {
     await _channel.invokeMethod('write', {"data": data});
   }
 }

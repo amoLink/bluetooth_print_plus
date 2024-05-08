@@ -87,12 +87,10 @@
         result(@(YES));
     }
     else if ([@"box" isEqualToString:call.method]) {
-        int startX = [[argumentsDict valueForKey:@"startX"] intValue];
-        int startY = [[argumentsDict valueForKey:@"startY"] intValue];
         int endX = [[argumentsDict valueForKey:@"endX"] intValue];
         int endY = [[argumentsDict valueForKey:@"endY"] intValue];
         int linThickness = [[argumentsDict valueForKey:@"linThickness"] intValue];
-        [self.tscCommand addBox:startX :startY :endX :endY :linThickness];
+        [self.tscCommand addBox:x :y :endX :endY :linThickness];
         result(@(YES));
     }
     else {

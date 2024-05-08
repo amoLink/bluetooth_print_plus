@@ -136,7 +136,7 @@ public class TscCommandPlugin implements FlutterPlugin, MethodCallHandler, Reque
                 assert wide != null;
                 this.tscCommand.add1DBarcode(
                     x, y,
-                    LabelCommand.BARCODETYPE.CODE128,
+                    LabelCommand.BARCODETYPE.valueOf(codeType),
                     height,
                     Boolean.TRUE.equals(readable) ? LabelCommand.READABEL.EANBEL : LabelCommand.READABEL.DISABLE,
                     LabelCommand.ROTATION.valueOf("ROTATION_" + rotation),
@@ -167,18 +167,16 @@ public class TscCommandPlugin implements FlutterPlugin, MethodCallHandler, Reque
                 result.success(true);
                 break;
             case "box":
-                Integer startX = call.argument("startX");
-                Integer startY = call.argument("startX");
                 Integer endX = call.argument("endX");
                 Integer endY = call.argument("endY");
                 Integer linThickness = call.argument("linThickness");
-                assert startX != null;
-                assert startY != null;
+                assert x != null;
+                assert y != null;
                 assert endX != null;
                 assert endY != null;
                 assert linThickness != null;
                 this.tscCommand.addBox(
-                    startX, startY,
+                    x, y,
                     endX, endY,
                     linThickness
                 );

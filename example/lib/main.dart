@@ -38,7 +38,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) => initBluetooth());
-    // _bluetoothPrintPlusPlugin.disconnect();
   }
 
   Future<void> initBluetooth() async {
@@ -49,7 +48,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         case BluetoothPrintPlus.CONNECTED:
           setState(() {
             _connected = true;
-            // tips = 'connect success';
             if (_device == null) return;
             Navigator.of(context).push(MaterialPageRoute(builder: (ctx) {
               return FunctionPage(_device!);
@@ -59,7 +57,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         case BluetoothPrintPlus.DISCONNECTED:
           setState(() {
             _connected = false;
-            // tips = 'disconnect success';
           });
           break;
         default:

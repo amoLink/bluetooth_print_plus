@@ -2,7 +2,8 @@
 
 ## Introduction
 
-BluetoothPrint is a bluetooth plugin for [Flutter](https://flutter.dev), a new mobile SDK to help developers build bluetooth thermal printer apps for both iOS and Android.(for example, Gprinter pt-280、pt-380、gp-1324、gp-2120 eg.)
+Bluetooth Print Plus is a Bluetooth plugin used to print thermal printers in [Flutter](https://flutter.dev), 
+a new mobile SDK to help developers build bluetooth thermal printer apps for both iOS and Android.(for example, Gprinter pt-280、pt-380、gp-1324、gp-2120 eg.)
 
 ### verison
 1.x.x -> blue and tsc command

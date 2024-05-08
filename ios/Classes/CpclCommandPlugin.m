@@ -42,7 +42,67 @@
         UIImage *image = [UIImage imageWithData:imageData.data];
         [self.cpclCommand addGraphics:EXPANDED WithXstart:x withYstart:y withImage:image withMaxWidth:image.size.width];
         result(@(YES));
-    } else if([@"print" isEqualToString:call.method]) {
+    } else if ([@"text" isEqualToString:call.method]) {
+        int xMulti = [[argumentsDict valueForKey:@"xMulti"] intValue];
+        int yMulti = [[argumentsDict valueForKey:@"yMulti"] intValue];
+        int bold = [[argumentsDict valueForKey:@"bold"] boolValue];
+        if (bold) {
+            [self.cpclCommand setBold:YES];
+        }
+        TEXTCOMMAND tc = T;
+        switch (rotation) {
+            case 0:
+                tc = T;
+                break;
+            case 90:
+                tc = T90;
+                break;
+            case 180:
+                tc = T180;
+                break;
+            case 270:
+                tc = T270;
+                break;
+        }
+        [self.cpclCommand addSetmagWithWidthScale:xMulti withHeightScale:yMulti];
+        [self.cpclCommand addText:tc withFont:3 withXstart:x withYstart:y withContent:content];
+        if (bold) {
+            [self.cpclCommand setBold:NO];
+        }
+        result(@(YES));
+    } else if ([@"qrCode" isEqualToString:call.method]) {
+        [self.cpclCommand addQrcode:BARCODE withXstart:x withYstart:y with:2 with:width withString:content];
+        result(@(YES));
+    }  else if ([@"barCode" isEqualToString:call.method]) {
+        int vertical = [[argumentsDict valueForKey:@"vertical"] boolValue];
+        NSString *codeType = [argumentsDict valueForKey:@"codeType"];
+        CPCLBARCODETYPE ct = Code128;
+        if ([codeType isEqualToString:@"128"]) {
+            ct = Code128;
+        } else if ([codeType isEqualToString:@"UPCA"]) {
+            ct = Upc_A;
+        } else if ([codeType isEqualToString:@"UPCE"]) {
+            ct = Upc_E;
+        } else if ([codeType isEqualToString:@"EAN13"]) {
+            ct = Ean13;
+        } else if ([codeType isEqualToString:@"EAN8"]) {
+            ct = Ean8;
+        } else if ([codeType isEqualToString:@"39"]) {
+            ct = Code39;
+        } else if ([codeType isEqualToString:@"93"]) {
+            ct = Code93;
+        } else if ([codeType isEqualToString:@"CODABAR"]) {
+            ct = Codebar;
+        }
+        [self.cpclCommand addBarcode:vertical ? VBARCODE : BARCODE withType:ct withWidth:width withRatio:Point2 withHeight:height withXstart:x withYstart:y withString:content];
+        result(@(YES));
+    } else if([@"line" isEqualToString:call.method]) {
+        int endX = [[argumentsDict valueForKey:@"endX"] intValue];
+        int endY = [[argumentsDict valueForKey:@"endY"] intValue];
+        [self.cpclCommand addLineWithXstart:x withYstart:y withXend:endX withYend:endY withWidth:width];
+        result(@(YES));
+    }
+    else if([@"print" isEqualToString:call.method]) {
         [self.cpclCommand addPrint];
         result(@(YES));
     }

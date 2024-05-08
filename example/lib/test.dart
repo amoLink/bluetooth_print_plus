@@ -1,4 +1,4 @@
-import 'package:bluetooth_print_plus/enum.dart';
+import 'package:bluetooth_print_plus/enum_tool.dart';
 import 'package:bluetooth_print_plus/tsp_command.dart';
 import 'package:flutter/services.dart';
 
