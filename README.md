@@ -8,12 +8,12 @@ a new mobile SDK to help developers build bluetooth thermal printer apps for bot
 now support **tspl、cpcl、esc image print**，
 **If this plugin is helpful to you, please give it a like，Thanks.**
 
-## verison
-
-1.x.x -> blue and tsc command, esc print image command
-1.5.x -> support cpcl command
-2.x.x -> improve esc command
-3.x.x -> support zpl command
+| Version | plan |
+| ----- | --------------------------------------------- |
+| 1.1.x | blue and tsc command, esc print image command                          |
+| 1.5.x | support cpcl command                          |
+| 2.x.x | improve esc command                           |
+| 3.x.x | support zpl command                           |
 
 ## Features
 
