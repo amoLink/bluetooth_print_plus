@@ -90,6 +90,7 @@ class _FunctionPageState extends State<FunctionPage> {
                         cmd = await CommandTool.cpclTemplateCmd();
                         break;
                       case CmdType.Esc:
+                        cmd = await CommandTool.escTemplateCmd();
                         break;
                     }
 

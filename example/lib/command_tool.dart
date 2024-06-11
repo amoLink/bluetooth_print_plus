@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:bluetooth_print_plus/cpcl_command.dart';
+import 'package:bluetooth_print_plus/enum_tool.dart';
 import 'package:bluetooth_print_plus/esc_command.dart';
 import 'package:bluetooth_print_plus/tsp_command.dart';
 
@@ -98,6 +99,27 @@ class CommandTool {
     await escCommand.print();
     await escCommand.image(image: image);
     await escCommand.print();
+    final cmd = await escCommand.getCommand();
+    return cmd;
+  }
+
+  static Future<Uint8List?> escTemplateCmd() async {
+    await escCommand.cleanCommand();
+    await escCommand.print(feedLines: 5);
+    await escCommand.newline();
+    await escCommand.text(content: "hello world");
+    await escCommand.newline();
+    await escCommand.text(
+        content: "hello flutter",
+        alignment: Alignment.center,
+        style: EscTextStyle.underline,
+        fontSize: EscFontSize.size3
+    );
+    await escCommand.newline();
+    await escCommand.code128(content: "123456");
+    await escCommand.newline();
+    await escCommand.qrCode(content: "this is qrcode");
+    await escCommand.print(feedLines: 5);
     final cmd = await escCommand.getCommand();
     return cmd;
   }

@@ -54,7 +54,19 @@ public class EscCommandPlugin implements FlutterPlugin, MethodCallHandler, Reque
         Integer width = call.argument("width");
         Integer height = call.argument("height");
         Integer rotation = call.argument("rotation");
+        Integer alignment = call.argument("alignment");
         String method = call.method;
+        EscCommand.JUSTIFICATION align = EscCommand.JUSTIFICATION.LEFT;
+        if (alignment != null) {
+            switch (alignment) {
+                case 1:
+                    align = EscCommand.JUSTIFICATION.CENTER;
+                    break;
+                case 2:
+                    align = EscCommand.JUSTIFICATION.RIGHT;
+                    break;
+            }
+        }
 
         switch (method) {
             case "cleanCommand":
@@ -70,13 +82,81 @@ public class EscCommandPlugin implements FlutterPlugin, MethodCallHandler, Reque
                 }
                 result.success(datas);
                 break;
+            case "newline":
+                this.getEscCommand().addPrintAndLineFeed();
+                result.success(true);
+                break;
             case "print":
                 this.getEscCommand().addPrintAndFeedLines((byte) 4);
+                result.success(true);
+                break;
+            case "text":
+                Integer printMode = call.argument("printMode");
+                Integer size = call.argument("size");
+                assert printMode != null;
+                assert size != null;
+                this.getEscCommand().addSelectJustification(align);
+                this.getEscCommand().addSetCharcterSize(EscCommand.WIDTH_ZOOM.valueOf("MUL_" + (size + 1)), EscCommand.HEIGHT_ZOOM.valueOf("MUL_" + (size + 1)));
+                switch (printMode) {
+                    case 0x08:
+                        this.getEscCommand().addSelectPrintModes(EscCommand.FONT.FONTA, EscCommand.ENABLE.ON, EscCommand.ENABLE.OFF, EscCommand.ENABLE.OFF, EscCommand.ENABLE.OFF);
+                        break;
+                    case 0x80:
+                        this.getEscCommand().addSelectPrintModes(EscCommand.FONT.FONTA, EscCommand.ENABLE.OFF, EscCommand.ENABLE.OFF, EscCommand.ENABLE.OFF, EscCommand.ENABLE.ON);
+                        break;
+                    case 0x88:
+                        this.getEscCommand().addSelectPrintModes(EscCommand.FONT.FONTA, EscCommand.ENABLE.ON, EscCommand.ENABLE.OFF, EscCommand.ENABLE.OFF, EscCommand.ENABLE.ON);
+                        break;
+                    default:
+                        break;
+                }
+                this.getEscCommand().addText(content);
+                this.getEscCommand().addSetCharcterSize(EscCommand.WIDTH_ZOOM.MUL_1, EscCommand.HEIGHT_ZOOM.MUL_1);
+                this.getEscCommand().addSelectPrintModes(EscCommand.FONT.FONTA, EscCommand.ENABLE.OFF, EscCommand.ENABLE.OFF, EscCommand.ENABLE.OFF, EscCommand.ENABLE.OFF);
+                result.success(true);
+                break;
+            case "code128":
+                Integer hri = call.argument("hri");
+                assert hri != null;
+                assert width != null;
+                assert height != null;
+                assert alignment != null;
+                this.getEscCommand().addSelectJustification(align);
+                this.getEscCommand().addSelectJustification(align);
+                this.getEscCommand().addSetBarcodeWidth(width.byteValue());
+                this.getEscCommand().addSetBarcodeHeight(height.byteValue());
+                EscCommand.HRI_POSITION position;
+                switch (hri) {
+                    case 1:
+                        position = EscCommand.HRI_POSITION.ABOVE;
+                        break;
+                    case 2:
+                        position = EscCommand.HRI_POSITION.BELOW;
+                        break;
+                    case 3:
+                        position = EscCommand.HRI_POSITION.ABOVE_AND_BELOW;
+                        break;
+                    default:
+                        position  = EscCommand.HRI_POSITION.NO_PRINT;
+                        break;
+                }
+                this.getEscCommand().addSelectPrintingPositionForHRICharacters(position);
+                result.success(true);
+                break;
+            case "qrCode":
+                Integer sizee = call.argument("size");
+                assert sizee != null;
+                assert content != null;
+                this.getEscCommand().addSelectJustification(align);
+                this.getEscCommand().addSelectErrorCorrectionLevelForQRCode((byte) 0x31);
+                this.getEscCommand().addSelectSizeOfModuleForQRCode((byte)sizee.intValue());
+                this.getEscCommand().addStoreQRCodeData(content);
                 result.success(true);
                 break;
             case "image":
                 byte[] bytes = call.argument("image");
                 assert bytes != null;
+                this.getEscCommand().addSelectJustification(align);
                 Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                 this.getEscCommand().addOriginRastBitImage(bitmap, bitmap.getWidth(), 1);
                 result.success(true);
