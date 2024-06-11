@@ -18,12 +18,11 @@ class EscCommand extends PlatformInterface {
     return command;
   }
 
-  Future<void> text({
-    required String content,
-    Alignment alignment = Alignment.left,
-    EscTextStyle style = EscTextStyle.default_,
-    EscFontSize fontSize = EscFontSize.default_
-  }) async {
+  Future<void> text(
+      {required String content,
+      Alignment alignment = Alignment.left,
+      EscTextStyle style = EscTextStyle.default_,
+      EscFontSize fontSize = EscFontSize.default_}) async {
     int printMode = EnumTool.getEscTextStyle(style);
     int size = EnumTool.getEscFontSize(fontSize);
     int align = EnumTool.getAlignment(alignment);
@@ -36,13 +35,12 @@ class EscCommand extends PlatformInterface {
     await methodChannel.invokeMethod<void>('text', params);
   }
 
-  Future<void> code128({
-    required String content,
-    int width = 2,
-    int height = 60,
-    Alignment alignment = Alignment.left,
-    HriPosition hriPosition = HriPosition.below
-  }) async {
+  Future<void> code128(
+      {required String content,
+      int width = 2,
+      int height = 60,
+      Alignment alignment = Alignment.left,
+      HriPosition hriPosition = HriPosition.below}) async {
     int hri = EnumTool.getHri(hriPosition);
     int align = EnumTool.getAlignment(alignment);
     Map<String, dynamic> params = {
@@ -57,7 +55,9 @@ class EscCommand extends PlatformInterface {
 
   Future<void> qrCode({
     required String content,
-    int size = 3, /// size range: 1~16
+    int size = 3,
+
+    /// size range: 1~16
     Alignment alignment = Alignment.left,
   }) async {
     int align = EnumTool.getAlignment(alignment);
@@ -74,10 +74,7 @@ class EscCommand extends PlatformInterface {
     Alignment alignment = Alignment.left,
   }) async {
     int align = EnumTool.getAlignment(alignment);
-    Map<String, dynamic> params = {
-      "image": image,
-      "alignment": align
-    };
+    Map<String, dynamic> params = {"image": image, "alignment": align};
     await methodChannel.invokeMethod<void>('image', params);
   }
 
