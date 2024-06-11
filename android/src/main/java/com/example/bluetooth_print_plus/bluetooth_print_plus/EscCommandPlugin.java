@@ -161,6 +161,18 @@ public class EscCommandPlugin implements FlutterPlugin, MethodCallHandler, Reque
                 this.getEscCommand().addOriginRastBitImage(bitmap, bitmap.getWidth(), 1);
                 result.success(true);
                 break;
+            case "cutPaper":
+                this.getEscCommand().addCutPaper();
+                result.success(true);
+                break;
+            case "sound":
+                Integer number = call.argument("number");
+                Integer time = call.argument("time");
+                assert number != null;
+                assert time != null;
+                this.getEscCommand().addSound((byte) number.intValue(), (byte) time.intValue());
+                result.success(true);
+                break;
 
             default:
                 result.notImplemented();

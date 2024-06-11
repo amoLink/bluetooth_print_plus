@@ -69,6 +69,7 @@ class EscCommand extends PlatformInterface {
     await methodChannel.invokeMethod<void>('qrCode', params);
   }
 
+  /// image
   Future<void> image({
     required Uint8List image,
     Alignment alignment = Alignment.left,
@@ -78,10 +79,22 @@ class EscCommand extends PlatformInterface {
     await methodChannel.invokeMethod<void>('image', params);
   }
 
+  /// newline
   Future<void> newline() async {
     await methodChannel.invokeMethod<void>('newline');
   }
 
+  Future<void> cutPaper() async {
+    await methodChannel.invokeMethod<void>('cutPaper');
+  }
+
+  /// add sound
+  Future<void> sound({int number = 1, int time = 3}) async {
+    Map<String, dynamic> params = {"number": number, "time": time};
+    await methodChannel.invokeMethod<void>('sound', params);
+  }
+
+  /// print
   Future<void> print({int feedLines = 4}) async {
     await methodChannel.invokeMethod<void>('print', {"feedLines": feedLines});
   }
