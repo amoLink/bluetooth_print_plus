@@ -1,5 +1,5 @@
 group 'com.example.bluetooth_print_plus.bluetooth_print_plus'
-version '1.5.2'
+version '2.0.0'
 
 buildscript {
     repositories {

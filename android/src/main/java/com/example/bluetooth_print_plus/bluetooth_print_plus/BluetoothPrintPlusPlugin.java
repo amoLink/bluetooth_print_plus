@@ -9,7 +9,6 @@ import android.bluetooth.BluetoothManager;
 import android.bluetooth.le.BluetoothLeScanner;
 import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanResult;
-import android.bluetooth.le.ScanSettings;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -19,7 +18,6 @@ import android.util.Log;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import com.gprinter.bean.PrinterDevices;
-import com.gprinter.io.BluetoothPort;
 import com.gprinter.io.PortManager;
 import com.gprinter.utils.Command;
 import com.gprinter.utils.ConnMethod;
@@ -34,17 +32,12 @@ import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugin.common.PluginRegistry.Registrar;
 import io.flutter.plugin.common.PluginRegistry.RequestPermissionsResultListener;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 
 /**
  * BluetoothPrintPlusPlugin
@@ -74,6 +67,7 @@ public class BluetoothPrintPlusPlugin implements FlutterPlugin, ActivityAware, M
   private MethodCall pendingCall;
   private Result pendingResult;
   private static final int REQUEST_FINE_LOCATION_PERMISSIONS = 1452;
+  private static final int REQUEST_COARSE_LOCATION_PERMISSIONS = 1451;
 
   private final TscCommandPlugin tscCommandPlugin = new TscCommandPlugin();
   private final CpclCommandPlugin cpclCommandPlugin = new CpclCommandPlugin();
@@ -346,6 +340,18 @@ public class BluetoothPrintPlusPlugin implements FlutterPlugin, ActivityAware, M
     Log.d(TAG,"start scan ");
 
     try {
+      if (ContextCompat.checkSelfPermission(activity,
+              Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED||ContextCompat.checkSelfPermission(activity,
+              Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+        ActivityCompat.requestPermissions(activity,
+                new String[] {
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCESS_COARSE_LOCATION
+                }, REQUEST_FINE_LOCATION_PERMISSIONS);
+
+        pendingResult = result;
+      }
       startScan();
       result.success(null);
     } catch (Exception e) {
@@ -450,10 +456,13 @@ public class BluetoothPrintPlusPlugin implements FlutterPlugin, ActivityAware, M
 
   @Override
   public boolean onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-
-    if (requestCode == REQUEST_FINE_LOCATION_PERMISSIONS) {
+    Log.d(TAG,"onRequestPermissionsResult ");
+    for (int i = 0; i < permissions.length; i++) {
+      Log.d(TAG, permissions[i]);
+    }
+    if (requestCode == REQUEST_FINE_LOCATION_PERMISSIONS || requestCode == REQUEST_COARSE_LOCATION_PERMISSIONS) {
       if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-        startScan(pendingCall, pendingResult);
+        startScan();
       } else {
         pendingResult.error("no_permissions", "this plugin requires location permissions for scanning", null);
         pendingResult = null;

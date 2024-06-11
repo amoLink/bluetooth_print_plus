@@ -3,9 +3,11 @@
 ## Introduction
 
 Bluetooth Print Plus is a Bluetooth plugin used to print thermal printers in [Flutter](https://flutter.dev), 
-a new mobile SDK to help developers build bluetooth thermal printer apps for both iOS and Android.(for example, Gprinter pt-280、pt-380、gp-1324、gp-2120 eg.),
+a new mobile SDK to help developers build bluetooth thermal printer apps for both iOS and Android.
 
-now support **tspl、cpcl、esc image print**，
+- ***Important, important, important. First, you need to run the demo to confirm the printer command type!!!***
+
+now support **tspl、cpcl、esc pos **，
 **If this plugin is helpful to you, please give it a like，Thanks.**
 
 | Version | plan |
