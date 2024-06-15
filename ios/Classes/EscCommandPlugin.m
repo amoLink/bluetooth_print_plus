@@ -105,7 +105,7 @@
     } else if([@"sound" isEqualToString:call.method]) {
         int number = [[argumentsDict valueForKey:@"number"] intValue];
         int time = [[argumentsDict valueForKey:@"time"] intValue];
-        [self.escCommand addSound:number :time :1;
+        [self.escCommand addSound:number :time :1];
         result(@(YES));
     }  else if([@"print" isEqualToString:call.method]) {
         int feedLines = [[argumentsDict valueForKey:@"feedLines"] intValue];
