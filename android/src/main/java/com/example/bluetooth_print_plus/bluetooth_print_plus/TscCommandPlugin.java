@@ -136,7 +136,7 @@ public class TscCommandPlugin implements FlutterPlugin, MethodCallHandler, Reque
                 assert wide != null;
                 this.tscCommand.add1DBarcode(
                     x, y,
-                    LabelCommand.BARCODETYPE.valueOf(codeType),
+                    getCodeType(codeType),
                     height,
                     Boolean.TRUE.equals(readable) ? LabelCommand.READABEL.EANBEL : LabelCommand.READABEL.DISABLE,
                     LabelCommand.ROTATION.valueOf("ROTATION_" + rotation),
@@ -191,5 +191,28 @@ public class TscCommandPlugin implements FlutterPlugin, MethodCallHandler, Reque
     @Override
     public boolean onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         return false;
+    }
+
+    public LabelCommand.BARCODETYPE getCodeType(String codeType) {
+        switch (codeType) {
+            case "39":
+                return LabelCommand.BARCODETYPE.CODE39;
+            case "93":
+                return LabelCommand.BARCODETYPE.CODE93;
+            case "ITF":
+                return LabelCommand.BARCODETYPE.ITF14;
+            case "UPCA":
+                return LabelCommand.BARCODETYPE.UPCA;
+            case "UPCE":
+                return LabelCommand.BARCODETYPE.UPCE;
+            case "CODABAR":
+                return LabelCommand.BARCODETYPE.CODABAR;
+            case "EAN8":
+                return LabelCommand.BARCODETYPE.EAN8;
+            case "EAN13":
+                return LabelCommand.BARCODETYPE.EAN13;
+            default:
+                return LabelCommand.BARCODETYPE.CODE128;
+        }
     }
 }

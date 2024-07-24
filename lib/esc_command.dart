@@ -1,13 +1,11 @@
 import 'package:flutter/services.dart';
-import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 import 'enum_tool.dart';
 
-class EscCommand extends PlatformInterface {
+class EscCommand {
   final methodChannel = const MethodChannel('bluetooth_print_plus_esc');
-  static final Object _token = Object();
 
-  EscCommand() : super(token: _token);
+  EscCommand();
 
   Future<void> cleanCommand() async {
     await methodChannel.invokeMethod<void>('cleanCommand');
