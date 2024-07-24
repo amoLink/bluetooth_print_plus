@@ -2,10 +2,9 @@ import 'package:flutter/services.dart';
 import 'enum_tool.dart';
 
 class TscCommand {
-  final methodChannel = const MethodChannel('bluetooth_print_plus_tsc');
-  static final Object _token = Object();
-
   TscCommand();
+
+  final methodChannel = const MethodChannel('bluetooth_print_plus_tsc');
 
   Future<void> cleanCommand() async {
     await methodChannel.invokeMethod<void>('cleanCommand');

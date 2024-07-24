@@ -45,7 +45,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     _bluetoothPrintPlus.state.listen((state) {
       print('******************* cur device status: $state');
       switch (state) {
-        case BluetoothPrintPlus.CONNECTED:
+        case BluetoothPrintPlus.connected:
           setState(() {
             _connected = true;
             if (_device == null) return;
@@ -54,7 +54,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
             }));
           });
           break;
-        case BluetoothPrintPlus.DISCONNECTED:
+        case BluetoothPrintPlus.disconnected:
           setState(() {
             _connected = false;
           });

@@ -16,13 +16,13 @@ class BluetoothPrintPlus {
 
   static BluetoothPrintPlus get instance => _instance;
 
-  static const String NAMESPACE = 'bluetooth_print_plus';
-  static const int CONNECTED = 1;
-  static const int DISCONNECTED = 0;
+  static const int connected = 1;
+  static const int disconnected = 0;
 
   static const MethodChannel _channel =
       MethodChannel("bluetooth_print_plus/methods");
-  static const EventChannel _stateChannel = EventChannel('$NAMESPACE/state');
+  static const EventChannel _stateChannel =
+      EventChannel('bluetooth_print_plus/state');
 
   Stream<MethodCall> get _methodStream => _methodStreamController.stream;
   final StreamController<MethodCall> _methodStreamController =
@@ -41,7 +41,7 @@ class BluetoothPrintPlus {
 
   Stream<bool> get isScanning => _isScanning.stream;
 
-  BehaviorSubject<List<BluetoothDevice>> _scanResults =
+  final BehaviorSubject<List<BluetoothDevice>> _scanResults =
       BehaviorSubject.seeded([]);
 
   Stream<List<BluetoothDevice>> get scanResults => _scanResults.stream;

@@ -3,9 +3,9 @@ import 'package:flutter/services.dart';
 import 'enum_tool.dart';
 
 class CpclCommand {
-  final methodChannel = const MethodChannel('bluetooth_print_plus_cpcl');
-
   CpclCommand();
+
+  final methodChannel = const MethodChannel('bluetooth_print_plus_cpcl');
 
   Future<void> cleanCommand() async {
     await methodChannel.invokeMethod<void>('cleanCommand');

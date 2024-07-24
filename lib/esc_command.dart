@@ -3,9 +3,9 @@ import 'package:flutter/services.dart';
 import 'enum_tool.dart';
 
 class EscCommand {
-  final methodChannel = const MethodChannel('bluetooth_print_plus_esc');
-
   EscCommand();
+
+  final methodChannel = const MethodChannel('bluetooth_print_plus_esc');
 
   Future<void> cleanCommand() async {
     await methodChannel.invokeMethod<void>('cleanCommand');
