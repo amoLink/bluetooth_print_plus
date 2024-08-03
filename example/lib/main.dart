@@ -77,7 +77,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('BluePrintPlus'),
+        title: const Text('BluetoothPrintPlus'),
       ),
       body: SafeArea(
         child: Column(

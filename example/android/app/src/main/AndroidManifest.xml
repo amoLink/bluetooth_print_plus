@@ -1,6 +1,7 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="com.example.bluetooth_print_plus.bluetooth_print_plus_example">
     <application
-        android:label="bluetooth_print_plus_example"
+        android:label="BluetoothPrintPlus"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
