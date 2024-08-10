@@ -6,16 +6,8 @@ Bluetooth Print Plus is a Bluetooth plugin used to print thermal printers in [Fl
 a new mobile SDK to help developers build bluetooth thermal printer apps for both iOS and Android.
 
 - ***Important, important, important. First, you need to run the demo to confirm the printer command type!!!***
-
 now support **tspl/tsc、cpcl、esc pos**，
 **If this plugin is helpful to you, please give it a like，Thanks.**
-
-| Version | plan |
-| ----- | --------------------------------------------- |
-| 1.1.x | blue and tsc command, esc print image command                          |
-| 1.5.x | support cpcl command                          |
-| 2.x.x | improve esc command                           |
-| 3.x.x | support zpl command                           |
 
 ## FAQ Support
 <div>
@@ -32,6 +24,14 @@ now support **tspl/tsc、cpcl、esc pos**，
 <div>
     <img src="https://github.com/amoLink/bluetooth_print_plus/blob/main/buy_me_a_coffee.png?raw=true" height="200px">
 </div>
+
+## Plan
+| Version | plan |
+| ----- | --------------------------------------------- |
+| 1.1.x | blue and tsc command, esc print image command                          |
+| 1.5.x | support cpcl command                          |
+| 2.x.x | improve esc command                           |
+| 3.x.x | support zpl command                           |
 
 ## Features
 |                         |      Android       |         iOS          |             Description            |
