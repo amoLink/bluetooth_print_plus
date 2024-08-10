@@ -63,8 +63,7 @@ public class BluetoothPrintPlusPlugin implements FlutterPlugin, ActivityAware, M
   private Activity activity;
 
   private Result pendingResult;
-  private static final int REQUEST_FINE_LOCATION_PERMISSIONS = 1452;
-  private static final int REQUEST_COARSE_LOCATION_PERMISSIONS = 1451;
+  private static final int REQUEST_LOCATION_PERMISSIONS = 1452;
 
   private final TscCommandPlugin tscCommandPlugin = new TscCommandPlugin();
   private final CpclCommandPlugin cpclCommandPlugin = new CpclCommandPlugin();
@@ -302,7 +301,7 @@ public class BluetoothPrintPlusPlugin implements FlutterPlugin, ActivityAware, M
         EasyPermissions.requestPermissions(
                 this.activity,
                 "Bluetooth requires location permission!!!",
-                100,
+                REQUEST_LOCATION_PERMISSIONS,
                 perms
         );
       }
@@ -402,7 +401,7 @@ public class BluetoothPrintPlusPlugin implements FlutterPlugin, ActivityAware, M
     for (int i = 0; i < permissions.length; i++) {
       Log.d(TAG, permissions[i]);
     }
-    if (requestCode == REQUEST_FINE_LOCATION_PERMISSIONS || requestCode == REQUEST_COARSE_LOCATION_PERMISSIONS) {
+    if (requestCode == REQUEST_LOCATION_PERMISSIONS) {
       if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
         startScan();
       } else {
