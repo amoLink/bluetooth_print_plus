@@ -1,5 +1,5 @@
 group 'com.example.bluetooth_print_plus.bluetooth_print_plus'
-version '2.0.6'
+version '2.0.7'
 
 buildscript {
     repositories {
@@ -22,6 +22,7 @@ rootProject.allprojects {
 apply plugin: 'com.android.library'
 
 android {
+    namespace "com.example.bluetooth_print_plus.bluetooth_print_plus"
     compileSdkVersion 31
 
     compileOptions {

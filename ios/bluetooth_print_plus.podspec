@@ -4,7 +4,7 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'bluetooth_print_plus'
-  s.version          = '2.0.6'
+  s.version          = '2.0.7'
   s.summary          = 'A new Flutter project.'
   s.description      = <<-DESC
 A new Flutter project.

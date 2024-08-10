@@ -1,6 +1,6 @@
 name: bluetooth_print_plus
 description: BluetoothPrint is a bluetooth plugin to help developers build bluetooth thermal printer apps for both iOS and Android..
-version: 2.0.6
+version: 2.0.7
 homepage: https://github.com/amoLink/bluetooth_print_plus
 
 environment:
@@ -19,7 +19,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.1
-  build_runner: ^2.0.6
+  build_runner: ^2.0.7
   json_serializable: ^4.1.3
 
 # For information on the generic Dart part of this file, see the
