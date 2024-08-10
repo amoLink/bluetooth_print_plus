@@ -342,7 +342,7 @@ public class BluetoothPrintPlusPlugin
         if (portManager != null) {// 先close上次连接
           portManager.closePort();
           try {
-            Thread.sleep(2000);
+            Thread.sleep(500);
           } catch (InterruptedException e) {
           }
         }

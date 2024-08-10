@@ -43,19 +43,19 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   Future<void> initBluetooth() async {
     bool isConnected = await _bluetoothPrintPlus.isConnected ?? false;
     _bluetoothPrintPlus.state.listen((state) {
-      print('******************* cur device status: $state');
+      print('********** cur device status: $state **********');
       switch (state) {
         case BluetoothPrintPlus.connected:
           setState(() {
-            _connected = true;
             if (_device == null) return;
-            Navigator.of(context).push(MaterialPageRoute(builder: (ctx) {
-              return FunctionPage(_device!);
-            }));
+            _connected = true;
+            _bluetoothPrintPlus.stopScan();
+            Navigator.of(context).push(MaterialPageRoute(builder: (ctx)=> FunctionPage(_device!)));
           });
           break;
         case BluetoothPrintPlus.disconnected:
           setState(() {
+            _device = null;
             _connected = false;
           });
           break;
@@ -113,7 +113,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                               ),
                               ElevatedButton(
                                 onPressed: () async {
-                                  _bluetoothPrintPlus.stopScan();
                                   _bluetoothPrintPlus.connect(d);
                                   _device = d;
                                 },

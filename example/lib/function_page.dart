@@ -19,11 +19,14 @@ class _FunctionPageState extends State<FunctionPage> {
   CmdType cmdType = CmdType.Tsc;
 
   @override
-  void dispose() {
-    super.dispose();
+  void deactivate() {
+    // TODO: implement deactivate
+    super.deactivate();
+    _disconnect();
+  }
 
-    BluetoothPrintPlus.instance.disconnect();
-    print("FunctionPage dispose");
+  void _disconnect() async {
+    await BluetoothPrintPlus.instance.disconnect();
   }
 
   @override
