@@ -19,11 +19,12 @@ now support **tspl/tsc、cpcl、esc pos**，
 
 ## FAQ Support
 <div>
-    <div>
-        <a href="https://im.qq.com/index.shtml">QQ group</a>
-        <img src="https://github.com/amoLink/bluetooth_print_plus/blob/main/qqGroup.jpg?raw=true" height="150px">
-    </div>
-    <a href="https://t.me/+a7KAkNjHFS81MGNi">TG group</a>
+    <p>
+        QQ group：<strong>904457621</strong>
+    </p>
+    <a href="https://t.me/+a7KAkNjHFS81MGNi">
+        <strong>TG group</strong>
+    </a>
 </div>
   
 
