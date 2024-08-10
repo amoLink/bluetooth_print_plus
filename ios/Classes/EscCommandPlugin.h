@@ -2,7 +2,7 @@
 //  TscCommand.h
 //  bluetooth_print_plus
 //
-//  Created by kaka on 2024/4/27.
+//  Created by amoLink on 2024/4/27.
 //
 
 #import <Foundation/Foundation.h>

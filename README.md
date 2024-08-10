@@ -7,7 +7,7 @@ a new mobile SDK to help developers build bluetooth thermal printer apps for bot
 
 - ***Important, important, important. First, you need to run the demo to confirm the printer command type!!!***
 
-now support **tspl、cpcl、esc pos **，
+now support **tspl/tsc、cpcl、esc pos**，
 **If this plugin is helpful to you, please give it a like，Thanks.**
 
 | Version | plan |
@@ -17,8 +17,22 @@ now support **tspl、cpcl、esc pos **，
 | 2.x.x | improve esc command                           |
 | 3.x.x | support zpl command                           |
 
-## Features
+## FAQ Support
+<div>
+    <div>
+        <a href="https://im.qq.com/index.shtml">QQ group</a>
+        <img src="https://github.com/amoLink/bluetooth_print_plus/blob/main/qqGroup.jpg?raw=true" height="150px">
+    </div>
+    <a href="https://t.me/+a7KAkNjHFS81MGNi">TG group</a>
+</div>
+  
 
+## Buy Me A Coffee/请我喝杯咖啡
+<div>
+    <img src="https://github.com/amoLink/bluetooth_print_plus/blob/main/buy_me_a_coffee.png?raw=true" height="200px">
+</div>
+
+## Features
 |                         |      Android       |         iOS          |             Description            |
 | :---------------        | :----------------: | :------------------: |  :-------------------------------- |
 | scan                    | :white_check_mark: |  :white_check_mark:  | Starts a scan for Bluetooth Low Energy devices. |
@@ -26,35 +40,13 @@ now support **tspl、cpcl、esc pos **，
 | disconnect              | :white_check_mark: |  :white_check_mark:  | Cancels an active or pending connection to the device. |
 | state                   | :white_check_mark: |  :white_check_mark:  | Stream of state changes for the Bluetooth Device. |
 
-
-
-## Tsc Command
-
-|          |      Android       |        iOS         | Description                                                  |
-| :------- | :----------------: | :----------------: | :----------------------------------------------------------- |
-| size     | :white_check_mark: | :white_check_mark: | Set label size in millimeters                                |
-| selfTest | :white_check_mark: | :white_check_mark: | Print self inspection page information                       |
-| print    | :white_check_mark: | :white_check_mark: | Print out data stored in the buffer                          |
-| gap      | :white_check_mark: | :white_check_mark: | Define the vertical spacing distance between two label papers. |
-| speed    | :white_check_mark: | :white_check_mark: | Set printing speed                                           |
-| density  | :white_check_mark: | :white_check_mark: | Set printing concentration                                   |
-| cls      | :white_check_mark: | :white_check_mark: | Clear data from image buffer                                 |
-| text     | :white_check_mark: | :white_check_mark: | print string                                                 |
-| image    | :white_check_mark: | :white_check_mark: | print image                                                  |
-| barCode  | :white_check_mark: | :white_check_mark: | This instruction is used to draw one-dimensional barcodes    |
-| qrCode   | :white_check_mark: | :white_check_mark: | This instruction is used to print QR codes                   |
-| bar      | :white_check_mark: | :white_check_mark: | This instruction is used to draw lines on labels             |
-| box      | :white_check_mark: | :white_check_mark: | This instruction is used to draw a rectangular box on a label |
-
-
-
 ## Usage
 
 [Example](https://github.com/)
 
 ### To use this plugin :
 
-- add the dependency to your [pubspec.yaml](https://github.com/thon-ju/bluetooth_print/blob/master/example/pubspec.yaml) file.
+- add the dependency to your [pubspec.yaml](https://github.com/amoLink/bluetooth_print_plus/blob/main/pubspec.yaml) file.
 
 ```yaml
   dependencies:
@@ -73,25 +65,24 @@ In the **android/app/src/main/AndroidManifest.xml** let’s add:
 	 <uses-permission android:name="android.permission.BLUETOOTH" />  
 	 <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
      <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
-	 <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />  
-	 <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>  
- <application
+	 <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 ```
 #### **IOS**
 In the **ios/Runner/Info.plist** let’s add:
 
 ```dart 
-	<dict>  
-	    <key>NSBluetoothAlwaysUsageDescription</key>  
-	    <string>Need BLE permission</string>  
-	    <key>NSBluetoothPeripheralUsageDescription</key>  
-	    <string>Need BLE permission</string>  
-	    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>  
-	    <string>Need Location permission</string>  
-	    <key>NSLocationAlwaysUsageDescription</key>  
-	    <string>Need Location permission</string>  
-	    <key>NSLocationWhenInUseUsageDescription</key>  
-	    <string>Need Location permission</string>
+    <key>NSBluetoothAlwaysUsageDescription</key>  
+    <string>Need BLE permission</string>  
+    <key>NSBluetoothPeripheralUsageDescription</key>  
+    <string>Need BLE permission</string>  
+    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>  
+    <string>Need Location permission</string>  
+    <key>NSLocationAlwaysUsageDescription</key>  
+    <string>Need Location permission</string>  
+    <key>NSLocationWhenInUseUsageDescription</key>  
+    <string>Need Location permission</string>
 ```
 
 For location permissions on iOS see more at: [https://developer.apple.com/documentation/corelocation/requesting_authorization_for_location_services](https://developer.apple.com/documentation/corelocation/requesting_authorization_for_location_services)
@@ -215,16 +206,6 @@ info.plist add:
     <string>bluetooth-peripheral</string>
 </array>
 ```
-
-## FAQ Support 
-you can join this [QQ](https://im.qq.com/index.shtml) group or join [TG group](https://t.me/+a7KAkNjHFS81MGNi),  feedback your problem 
-
-<img src="qqGroup.jpg">
-
-## Buy me a coffee
-<img src="buy_me_a_coffee.png">
-
-
 
 ## Thanks For
 - [flutter_blue](https://github.com/pauldemarco/flutter_blue)
