@@ -60,19 +60,13 @@ class BluetoothPrintPlus {
   Stream<BluetoothDevice> scan({
     Duration? timeout,
   }) async* {
-    // if (_isScanning.value == true) {
-    //   throw Exception('Another scan is already in progress.');
-    // }
-
     // Emit to isScanning
     _isScanning.add(true);
-
     final killStreams = <Stream>[];
     killStreams.add(_stopScanPill);
     if (timeout != null) {
       killStreams.add(Rx.timer(null, timeout));
     }
-
     // Clear scan results list
     _scanResults.add(<BluetoothDevice>[]);
 

@@ -32,6 +32,7 @@ import io.flutter.plugin.common.EventChannel.StreamHandler;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugin.common.PluginRegistry.RequestPermissionsResultListener;
+import pub.devrel.easypermissions.EasyPermissions;
 
 import java.io.IOException;
 import java.util.Comparator;
@@ -292,18 +293,19 @@ public class BluetoothPrintPlusPlugin implements FlutterPlugin, ActivityAware, M
   private void startScan(MethodCall call, Result result) {
     Log.d(TAG,"start scan ");
     try {
-      int p1 = ContextCompat.checkSelfPermission(activity,Manifest.permission.ACCESS_COARSE_LOCATION);
-      int p2 = ContextCompat.checkSelfPermission(activity,Manifest.permission.ACCESS_FINE_LOCATION);
-      if (p1 != PackageManager.PERMISSION_GRANTED || p2 != PackageManager.PERMISSION_GRANTED) {
-        ActivityCompat.requestPermissions(activity,
-                new String[] {
-                        Manifest.permission.ACCESS_FINE_LOCATION,
-                        Manifest.permission.ACCESS_COARSE_LOCATION
-                }, REQUEST_FINE_LOCATION_PERMISSIONS);
-
-        pendingResult = result;
+      String[] perms = {Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION};
+      if (EasyPermissions.hasPermissions(this.context, perms)) {
+        // Already have permission, do the thing
+        startScan();
+      } else {
+        // Do not have permissions, request them now
+        EasyPermissions.requestPermissions(
+                this.activity,
+                "Bluetooth requires location permission!!!",
+                100,
+                perms
+        );
       }
-      startScan();
       result.success(null);
     } catch (Exception e) {
       result.error("startScan", e.getMessage(), e);

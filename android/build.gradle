@@ -1,5 +1,5 @@
 group 'com.example.bluetooth_print_plus.bluetooth_print_plus'
-version '2.0.7'
+version '2.1.0'
 
 buildscript {
     repositories {
@@ -53,6 +53,7 @@ android {
 dependencies {
     implementation files('libs/SDKLib.jar')
     implementation "androidx.core:core:1.6.0"
+    implementation 'pub.devrel:easypermissions:3.0.0'
 }
 
 
