@@ -177,7 +177,6 @@ public class BluetoothPrintPlusPlugin
         break;
       case "startScan": {
         startScan(call, result);
-        result.success(null);
       }
         break;
       case "stopScan":
@@ -220,7 +219,7 @@ public class BluetoothPrintPlusPlugin
       if (BluetoothDevice.ACTION_FOUND.equals(action)) {
         BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
         BluetoothParameter parameter = new BluetoothParameter();
-        int rssi = intent.getExtras().getShort(BluetoothDevice.EXTRA_RSSI);// 获取蓝牙信号强度
+        int rssi = intent.getExtras().getShort(BluetoothDevice.EXTRA_RSSI);
         if (device != null && device.getName() != null) {
           parameter.setBluetoothName(device.getName());
         } else {
@@ -339,7 +338,7 @@ public class BluetoothPrintPlusPlugin
     ThreadPoolManager.getInstance().addTask(new Runnable() {
       @Override
       public void run() {
-        if (portManager != null) {// 先close上次连接
+        if (portManager != null) {
           portManager.closePort();
           try {
             Thread.sleep(500);
