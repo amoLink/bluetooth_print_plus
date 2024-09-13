@@ -1,4 +1,3 @@
-import 'package:bluetooth_print_plus/bluetooth_print_model.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 
@@ -50,7 +49,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
             if (_device == null) return;
             _connected = true;
             _bluetoothPrintPlus.stopScan();
-            Navigator.of(context).push(MaterialPageRoute(builder: (ctx)=> FunctionPage(_device!)));
+            Navigator.of(context).push(
+                MaterialPageRoute(builder: (ctx) => FunctionPage(_device!)));
           });
           break;
         case BluetoothPrintPlus.disconnected:

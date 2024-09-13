@@ -1,5 +1,5 @@
 PODS:
-  - bluetooth_print_plus (2.1.6):
+  - bluetooth_print_plus (2.2.0):
     - Flutter
     - GSDK (= 0.0.7)
   - Flutter (1.0.0)
@@ -25,7 +25,7 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/integration_test/ios"
 
 SPEC CHECKSUMS:
-  bluetooth_print_plus: 720d54493d2d0a273a8c67154b601ccaf3d1c082
+  bluetooth_print_plus: be7575b91015e5a59759df083626aa388afd9bd5
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
   GSDK: 65d54603da7bece31b433c0f34f8a52c4431dd08
   integration_test: 13825b8a9334a850581300559b8839134b124670

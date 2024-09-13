@@ -12,6 +12,8 @@ import androidx.annotation.NonNull;
 import com.gprinter.command.CpclCommand;
 import com.gprinter.command.LabelCommand;
 
+import java.util.Objects;
+
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
@@ -123,8 +125,36 @@ public class CpclCommandPlugin implements FlutterPlugin, MethodCallHandler, Requ
                 assert height != null;
                 assert x != null;
                 assert y != null;
+                assert codeType != null;
                 CpclCommand.COMMAND command = vertical ? VBARCODE : BARCODE;
-                this.cpclCommand.addBarcode(command, CpclCommand.CPCLBARCODETYPE.valueOf(codeType), height, x, y, content);
+                CpclCommand.CPCLBARCODETYPE barcodeType;
+                switch (codeType) {
+                    case "UPCA":
+                        barcodeType = CpclCommand.CPCLBARCODETYPE.UPCA;
+                        break;
+                    case "UPCE":
+                        barcodeType = CpclCommand.CPCLBARCODETYPE.UPCE;
+                        break;
+                    case "EAN13":
+                        barcodeType = CpclCommand.CPCLBARCODETYPE.EAN_13;
+                        break;
+                    case "EAN8":
+                        barcodeType = CpclCommand.CPCLBARCODETYPE.EAN_8;
+                        break;
+                    case "39":
+                        barcodeType = CpclCommand.CPCLBARCODETYPE.CODE39;
+                        break;
+                    case "93":
+                        barcodeType = CpclCommand.CPCLBARCODETYPE.CODE93;
+                        break;
+                    case "CODABAR":
+                        barcodeType = CpclCommand.CPCLBARCODETYPE.CODABAR;
+                        break;
+                    default:
+                        barcodeType = CpclCommand.CPCLBARCODETYPE.CODE128;
+                        break;
+                }
+                this.cpclCommand.addBarcode(command, barcodeType, height, x, y, content);
                 result.success(true);
                 break;
             case "line":

@@ -2,44 +2,50 @@
 
 ## Introduction
 
-Bluetooth Print Plus is a Bluetooth plugin used to print thermal printers in [Flutter](https://flutter.dev), 
-a new mobile SDK to help developers build bluetooth thermal printer apps for both iOS and Android.
+Bluetooth Print Plus is a Bluetooth plugin used to print thermal printers in [Flutter](https://flutter.dev), a new mobile SDK to help developers build bluetooth thermal printer apps for iOS and Android.
 
-- ***Important, important, important. First, you need to run the demo to confirm the printer command type!!!***
-now support **tspl/tsc、cpcl、esc pos**，
-**If this plugin is helpful to you, please give it a like，Thanks.**
+<strong>
+  <span style="color: red;">Important, important, important.</span> First, you need to run the demo to confirm the printer command type ! ! !
+</strong>
+<strong>
+  now support <span style="color: green;">tspl/tsc、cpcl、esc pos.</span> 
+  If this plugin is helpful to you, please give it a like, Thanks.
+</strong>
 
 ## FAQ Support
-<div>
-    <p>
-        QQ group：<strong>904457621</strong>
-    </p>
+<div style="margin-bottom: 1.5rem; ">
+    <a href="http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=srMhoE9RiFhIrhDoJB_jZCsaTvw09KaD&authKey=k4fAypkX3gSG7REanSfi0OZCXJxprJdnZ1y2BU2QAMbgOt0T%2F1hIr%2BikbO3kQPJc&noverify=0&group_code=904457621">
+        <strong>QQ group</strong>
+    </a>
+    <div style="width: 3rem; display: inline-block;"></div>
     <a href="https://t.me/+a7KAkNjHFS81MGNi">
         <strong>TG group</strong>
     </a>
 </div>
-  
 
 ## Buy Me A Coffee/请我喝杯咖啡
+
 <div>
     <img src="https://github.com/amoLink/bluetooth_print_plus/blob/main/buy_me_a_coffee.png?raw=true" height="200px">
 </div>
 
 ## Plan
-| Version | plan |
-| ----- | --------------------------------------------- |
-| 1.1.x | blue and tsc command, esc print image command                          |
-| 1.5.x | support cpcl command                          |
-| 2.x.x | improve esc command                           |
-| 3.x.x | support zpl command                           |
+
+| Version | plan                                          |
+| ------- | --------------------------------------------- |
+| 1.1.x   | blue and tsc command, esc print image command |
+| 1.5.x   | support cpcl command                          |
+| 2.x.x   | improve esc command                           |
+| 3.x.x   | support zpl command                           |
 
 ## Features
-|                         |      Android       |         iOS          |             Description            |
-| :---------------        | :----------------: | :------------------: |  :-------------------------------- |
-| scan                    | :white_check_mark: |  :white_check_mark:  | Starts a scan for Bluetooth Low Energy devices. |
-| connect                 | :white_check_mark: |  :white_check_mark:  | Establishes a connection to the device. |
-| disconnect              | :white_check_mark: |  :white_check_mark:  | Cancels an active or pending connection to the device. |
-| state                   | :white_check_mark: |  :white_check_mark:  | Stream of state changes for the Bluetooth Device. |
+
+|            |      Android       |        iOS         | Description                                            |
+| :--------- | :----------------: | :----------------: | :----------------------------------------------------- |
+| scan       | :white_check_mark: | :white_check_mark: | Starts a scan for Bluetooth Low Energy devices.        |
+| connect    | :white_check_mark: | :white_check_mark: | Establishes a connection to the device.                |
+| disconnect | :white_check_mark: | :white_check_mark: | Cancels an active or pending connection to the device. |
+| state      | :white_check_mark: | :white_check_mark: | Stream of state changes for the Bluetooth Device.      |
 
 ## Usage
 
@@ -50,39 +56,43 @@ now support **tspl/tsc、cpcl、esc pos**，
 - add the dependency to your [pubspec.yaml](https://github.com/amoLink/bluetooth_print_plus/blob/main/pubspec.yaml) file.
 
 ```yaml
-  dependencies:
-    flutter:
-      sdk: flutter
-    bluetooth_print_plus:
+dependencies:
+  flutter:
+    sdk: flutter
+  bluetooth_print_plus: ^2.2.0
 ```
 
 ### Add permissions for Bluetooth
+
 We need to add the permission to use Bluetooth and access location:
 
 #### **Android**
+
 In the **android/app/src/main/AndroidManifest.xml** let’s add:
 
-```xml 
-	 <uses-permission android:name="android.permission.BLUETOOTH" />  
+```xml
+	 <uses-permission android:name="android.permission.BLUETOOTH" />
 	 <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
      <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
 	 <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 ```
+
 #### **IOS**
+
 In the **ios/Runner/Info.plist** let’s add:
 
-```dart 
-    <key>NSBluetoothAlwaysUsageDescription</key>  
-    <string>Need BLE permission</string>  
-    <key>NSBluetoothPeripheralUsageDescription</key>  
-    <string>Need BLE permission</string>  
-    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>  
-    <string>Need Location permission</string>  
-    <key>NSLocationAlwaysUsageDescription</key>  
-    <string>Need Location permission</string>  
-    <key>NSLocationWhenInUseUsageDescription</key>  
+```dart
+    <key>NSBluetoothAlwaysUsageDescription</key>
+    <string>Need BLE permission</string>
+    <key>NSBluetoothPeripheralUsageDescription</key>
+    <string>Need BLE permission</string>
+    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+    <string>Need Location permission</string>
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>Need Location permission</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
     <string>Need Location permission</string>
 ```
 
@@ -92,13 +102,12 @@ For location permissions on iOS see more at: [https://developer.apple.com/docume
 
 ```dart
 import 'package:bluetooth_print_plus/bluetooth_print_plus.dart';
-import 'package:bluetooth_print/bluetooth_print_model.dart';
-
 
 final _bluetoothPrintPlus = BluetoothPrintPlus.instance;
 ```
 
 ### scan
+
 ```dart
 // begin scan
 _bluetoothPrintPlus.startScan(timeout: const Duration(seconds: 30));
@@ -147,11 +156,13 @@ StreamBuilder<List<BluetoothDevice>>(
 ```
 
 ### connect
+
 ```dart
 await _bluetoothPrintPlus.connect(_device);
 ```
 
 ### disconnect
+
 ```dart
 await _bluetoothPrintPlus.disconnect();
 or
@@ -159,6 +170,7 @@ await  BluetoothPrintPlus.instance.disconnect();
 ```
 
 ### listen state
+
 ```dart
 _bluetoothPrintPlus.state.listen((state) {
   print('cur device status: $state');
@@ -178,7 +190,9 @@ _bluetoothPrintPlus.state.listen((state) {
   }
 });
 ```
+
 ### print (tsc command, label mode)
+
 ```dart
     final ByteData bytes = await rootBundle.load("assets/dithered-image.png");
     final Uint8List image = bytes.buffer.asUint8List();
@@ -192,10 +206,12 @@ _bluetoothPrintPlus.state.listen((state) {
     BluetoothPrintPlus.instance.write(cmd);
 ```
 
-
 ## Troubleshooting
-#### error:'State restoration of CBCentralManager is only allowed for applications that have specified the "bluetooth-central" background mode'    
+
+#### error:'State restoration of CBCentralManager is only allowed for applications that have specified the "bluetooth-central" background mode'
+
 info.plist add:
+
 ```
 <key>NSBluetoothAlwaysUsageDescription</key>
 <string>Allow App use bluetooth?</string>
@@ -207,6 +223,3 @@ info.plist add:
     <string>bluetooth-peripheral</string>
 </array>
 ```
-
-## Thanks For
-- [flutter_blue](https://github.com/pauldemarco/flutter_blue)

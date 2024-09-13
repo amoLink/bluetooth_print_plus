@@ -1,4 +1,3 @@
-import 'package:bluetooth_print_plus/bluetooth_print_model.dart';
 import 'package:bluetooth_print_plus/bluetooth_print_plus.dart';
 import 'package:bluetooth_print_plus_example/command_tool.dart';
 import 'package:flutter/material.dart';
@@ -98,7 +97,7 @@ class _FunctionPageState extends State<FunctionPage> {
                     }
 
                     BluetoothPrintPlus.instance.write(cmd);
-                    print("getCommand $cmd");
+                    // print("getCommand $cmd");
                   },
                   child: const Text("text/QR_code/barcode")),
             ],

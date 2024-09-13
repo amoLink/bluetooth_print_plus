@@ -19,6 +19,7 @@ import android.os.Looper;
 import android.util.Log;
 import com.gprinter.bean.PrinterDevices;
 import com.gprinter.io.PortManager;
+import com.gprinter.utils.CallbackListener;
 import com.gprinter.utils.Command;
 import com.gprinter.utils.ConnMethod;
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
@@ -350,7 +351,38 @@ public class BluetoothPrintPlusPlugin
               .setContext(context)
               .setConnMethod(ConnMethod.BLUETOOTH)
               .setMacAddress(mac)
-              .setCommand(Command.TSC)
+              .setCommand(Command.CPCL)
+              .setCallbackListener(new CallbackListener() {
+                @Override
+                public void onConnecting() {
+
+                }
+
+                @Override
+                public void onCheckCommand() {
+
+                }
+
+                @Override
+                public void onSuccess(PrinterDevices printerDevices) {
+
+                }
+
+                @Override
+                public void onReceive(byte[] data) {
+
+                }
+
+                @Override
+                public void onFailure() {
+
+                }
+
+                @Override
+                public void onDisconnect() {
+
+                }
+              })
               .build();
           Printer.connect(blueTooth);
         }

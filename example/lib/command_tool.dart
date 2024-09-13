@@ -1,9 +1,6 @@
 import 'dart:typed_data';
 
-import 'package:bluetooth_print_plus/cpcl_command.dart';
-import 'package:bluetooth_print_plus/enum_tool.dart';
-import 'package:bluetooth_print_plus/esc_command.dart';
-import 'package:bluetooth_print_plus/tsp_command.dart';
+import 'package:bluetooth_print_plus/bluetooth_print_plus.dart';
 
 /// CommandTool
 class CommandTool {

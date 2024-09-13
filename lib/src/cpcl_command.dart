@@ -66,7 +66,7 @@ class CpclCommand {
       "content": content,
       "x": x,
       "y": y,
-      "cellWidth": width,
+      "width": width,
     };
     await methodChannel.invokeMethod<void>('qrCode', params);
   }
@@ -102,7 +102,7 @@ class CpclCommand {
       "x": x,
       "y": y,
       "endX": endX,
-      "endXY": endY,
+      "endY": endY,
       "width": width,
     };
     await methodChannel.invokeMethod<void>('line', params);
