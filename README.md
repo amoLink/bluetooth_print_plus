@@ -13,15 +13,7 @@ Bluetooth Print Plus is a Bluetooth plugin used to print thermal printers in [Fl
 </strong>
 
 ## FAQ Support
-<div style="margin-bottom: 1.5rem; ">
-    <a href="http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=srMhoE9RiFhIrhDoJB_jZCsaTvw09KaD&authKey=k4fAypkX3gSG7REanSfi0OZCXJxprJdnZ1y2BU2QAMbgOt0T%2F1hIr%2BikbO3kQPJc&noverify=0&group_code=904457621">
-        <strong>QQ group</strong>
-    </a>
-    <div style="width: 3rem; display: inline-block;"></div>
-    <a href="https://t.me/+a7KAkNjHFS81MGNi">
-        <strong>TG group</strong>
-    </a>
-</div>
+[**QQ group**](http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=srMhoE9RiFhIrhDoJB_jZCsaTvw09KaD&authKey=k4fAypkX3gSG7REanSfi0OZCXJxprJdnZ1y2BU2QAMbgOt0T%2F1hIr%2BikbO3kQPJc&noverify=0&group_code=904457621)     [**TG group**](https://t.me/+a7KAkNjHFS81MGNi)
 
 ## Buy Me A Coffee/请我喝杯咖啡
 
@@ -71,10 +63,10 @@ We need to add the permission to use Bluetooth and access location:
 In the **android/app/src/main/AndroidManifest.xml** let’s add:
 
 ```xml
-	 <uses-permission android:name="android.permission.BLUETOOTH" />
-	 <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
-     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
-	 <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 ```
