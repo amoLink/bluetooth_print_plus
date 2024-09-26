@@ -13,7 +13,7 @@ Bluetooth Print Plus is a Bluetooth plugin used to print thermal printers in [Fl
 </strong>
 
 ## FAQ Support
-[**QQ group**](http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=srMhoE9RiFhIrhDoJB_jZCsaTvw09KaD&authKey=k4fAypkX3gSG7REanSfi0OZCXJxprJdnZ1y2BU2QAMbgOt0T%2F1hIr%2BikbO3kQPJc&noverify=0&group_code=904457621)     [**TG group**](https://t.me/+a7KAkNjHFS81MGNi)
+[**QQ group**](http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=srMhoE9RiFhIrhDoJB_jZCsaTvw09KaD&authKey=k4fAypkX3gSG7REanSfi0OZCXJxprJdnZ1y2BU2QAMbgOt0T%2F1hIr%2BikbO3kQPJc&noverify=0&group_code=904457621) &nbsp;&nbsp;&nbsp; [**TG group**](https://t.me/+a7KAkNjHFS81MGNi)
 
 ## Buy Me A Coffee/请我喝杯咖啡
 
