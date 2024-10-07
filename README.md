@@ -215,3 +215,6 @@ info.plist add:
     <string>bluetooth-peripheral</string>
 </array>
 ```
+
+## Stargazers over time
+[![Stargazers over time](https://starchart.cc/amoLink/bluetooth_print_plus.svg?variant=light)](https://starchart.cc/amoLink/bluetooth_print_plus)
