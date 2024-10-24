@@ -16,11 +16,12 @@ class EscCommand {
     return command;
   }
 
-  Future<void> text(
-      {required String content,
-      Alignment alignment = Alignment.left,
-      EscTextStyle style = EscTextStyle.default_,
-      EscFontSize fontSize = EscFontSize.default_}) async {
+  Future<void> text({
+    required String content,
+    Alignment alignment = Alignment.left,
+    EscTextStyle style = EscTextStyle.default_,
+    EscFontSize fontSize = EscFontSize.default_
+  }) async {
     int printMode = EnumTool.getEscTextStyle(style);
     int size = EnumTool.getEscFontSize(fontSize);
     int align = EnumTool.getAlignment(alignment);
@@ -33,12 +34,13 @@ class EscCommand {
     await methodChannel.invokeMethod<void>('text', params);
   }
 
-  Future<void> code128(
-      {required String content,
-      int width = 2,
-      int height = 60,
-      Alignment alignment = Alignment.left,
-      HriPosition hriPosition = HriPosition.below}) async {
+  Future<void> code128({
+    required String content,
+    int width = 2,
+    int height = 60,
+    Alignment alignment = Alignment.left,
+    HriPosition hriPosition = HriPosition.below
+  }) async {
     int hri = EnumTool.getHri(hriPosition);
     int align = EnumTool.getAlignment(alignment);
     Map<String, dynamic> params = {
@@ -53,9 +55,7 @@ class EscCommand {
 
   Future<void> qrCode({
     required String content,
-    int size = 3,
-
-    /// size range: 1~16
+    int size = 3, /// size range: 1~16
     Alignment alignment = Alignment.left,
   }) async {
     int align = EnumTool.getAlignment(alignment);
@@ -87,7 +87,10 @@ class EscCommand {
   }
 
   /// add sound
-  Future<void> sound({int number = 1, int time = 3}) async {
+  Future<void> sound({
+    int number = 1,
+    int time = 3
+  }) async {
     Map<String, dynamic> params = {"number": number, "time": time};
     await methodChannel.invokeMethod<void>('sound', params);
   }

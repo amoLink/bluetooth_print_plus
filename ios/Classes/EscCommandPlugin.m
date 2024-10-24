@@ -19,7 +19,7 @@
 
 - (void)handleMethodCall:(FlutterMethodCall *)call result:(FlutterResult)result {
     NSMutableDictionary *argumentsDict = call.arguments;
-    NSLog(@"esc call.method : %@", call.method);
+    // NSLog(@"esc call.method : %@", call.method);
     int x = [[argumentsDict valueForKey:@"x"] intValue];
     int y = [[argumentsDict valueForKey:@"y"] intValue];
     int width = [[argumentsDict valueForKey:@"width"] intValue];

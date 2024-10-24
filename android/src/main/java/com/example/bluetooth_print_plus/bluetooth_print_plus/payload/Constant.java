@@ -1,4 +1,4 @@
-package com.example.bluetooth_print_plus.bluetooth_print_plus;
+package com.example.bluetooth_print_plus.bluetooth_print_plus.payload;
 
 public class Constant {
     public static final String SERIALPORTPATH = "SerialPortPath";

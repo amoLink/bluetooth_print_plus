@@ -79,12 +79,12 @@ class CommandTool {
   static Future<Uint8List?> cpclTemplateCmd() async {
     await cpclCommand.cleanCommand();
     await cpclCommand.size(width: 76 * 8, height: 76 * 8);
-    await cpclCommand.qrCode(content: "12345678", x: 10, y: 10, width: 10);
-    await cpclCommand.text(content: "日啖荔枝三百颗", x: 10, y: 150);
+    await cpclCommand.qrCode(content: "12345678", x: 10, y: 10, width: 8);
+    await cpclCommand.barCode(content: "12345678", x: 10, y: 190);
+    await cpclCommand.text(content: "日啖荔枝三百颗", x: 10, y: 300);
     await cpclCommand.text(
-        content: "不辞长作岭南人", x: 10, y: 180, bold: true, xMulti: 2, yMulti: 2);
-    await cpclCommand.barCode(content: "12345678", x: 10, y: 220);
-    await cpclCommand.line(x: 150, y: 100, endX: 300, endY: 500);
+        content: "不辞长作岭南人", x: 10, y: 330, bold: true, xMulti: 2, yMulti: 2);
+    await cpclCommand.line(x: 300, y: 100, endX: 360, endY: 500);
     await cpclCommand.print();
     final cmd = await cpclCommand.getCommand();
     return cmd;

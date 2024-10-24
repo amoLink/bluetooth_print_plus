@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:rxdart/rxdart.dart';
 
+import '../bluetooth_print_plus.dart';
 import 'blue_device.dart';
 
 class BluetoothPrintPlus {
@@ -16,9 +17,6 @@ class BluetoothPrintPlus {
 
   static BluetoothPrintPlus get instance => _instance;
 
-  static const int connected = 1;
-  static const int disconnected = 0;
-
   static const MethodChannel _channel =
       MethodChannel("bluetooth_print_plus/methods");
   static const EventChannel _stateChannel =
@@ -27,15 +25,6 @@ class BluetoothPrintPlus {
   Stream<MethodCall> get _methodStream => _methodStreamController.stream;
   final StreamController<MethodCall> _methodStreamController =
       StreamController.broadcast();
-
-  Future<bool> get isAvailable async =>
-      await _channel.invokeMethod('isAvailable').then<bool>((d) => d);
-
-  Future<bool> get isOn async =>
-      await _channel.invokeMethod('isOn').then<bool>((d) => d);
-
-  Future<bool?> get isConnected async =>
-      await _channel.invokeMethod('isConnected');
 
   final BehaviorSubject<bool> _isScanning = BehaviorSubject.seeded(false);
 
@@ -49,10 +38,41 @@ class BluetoothPrintPlus {
   final PublishSubject _stopScanPill = PublishSubject();
 
   /// Gets the current state of the Bluetooth module
-  Stream<int> get state async* {
-    yield await _channel.invokeMethod('state').then((s) => s);
+  Stream<BPPState> get state async* {
+    yield await _channel.invokeMethod('state').then((s) {
+      if(s == 0) {
+        return BPPState.blueOn;
+      } else if(s == 1) {
+        return BPPState.blueOff;
+      } else if(s == 2) {
+        return BPPState.deviceConnected;
+      } else if(s == 3) {
+        return BPPState.deviceDisconnected;
+      }
+      return BPPState.deviceDisconnected;
+    });
 
-    yield* _stateChannel.receiveBroadcastStream().map((s) => s);
+    yield* _stateChannel.receiveBroadcastStream().map((s) {
+      if(s == 0) {
+        return BPPState.blueOn;
+      } else if(s == 1) {
+        return BPPState.blueOff;
+      } else if(s == 2) {
+        return BPPState.deviceConnected;
+      } else if(s == 3) {
+        return BPPState.deviceDisconnected;
+      }
+      return BPPState.deviceDisconnected;
+    });
+  }
+
+  /// peripheral data feedback, receive and listen;
+  Stream<Uint8List> get receivedData async* {
+    yield* BluetoothPrintPlus.instance._methodStream
+        .where((m) => m.method == "ReceivedData")
+        .map((m) {
+          return m.arguments;
+        });
   }
 
   /// Starts a scan for Bluetooth Low Energy devices
@@ -85,23 +105,23 @@ class BluetoothPrintPlus {
         .takeUntil(Rx.merge(killStreams))
         .doOnDone(stopScan)
         .map((map) {
-      final device = BluetoothDevice.fromJson(Map<String, dynamic>.from(map));
-      final List<BluetoothDevice> list = _scanResults.value;
-      int newIndex = -1;
-      list.asMap().forEach((index, e) {
-        if (e.address == device.address) {
-          newIndex = index;
-        }
-      });
+            final device = BluetoothDevice.fromJson(Map<String, dynamic>.from(map));
+            final List<BluetoothDevice> list = _scanResults.value;
+            int newIndex = -1;
+            list.asMap().forEach((index, e) {
+              if (e.address == device.address) {
+                newIndex = index;
+              }
+            });
 
-      if (newIndex != -1) {
-        list[newIndex] = device;
-      } else {
-        list.add(device);
-      }
-      _scanResults.add(list);
-      return device;
-    });
+            if (newIndex != -1) {
+              list[newIndex] = device;
+            } else {
+              list.add(device);
+            }
+            _scanResults.add(list);
+            return device;
+        });
   }
 
   Future startScan({
@@ -122,8 +142,6 @@ class BluetoothPrintPlus {
       _channel.invokeMethod('connect', device.toJson());
 
   Future<dynamic> disconnect() => _channel.invokeMethod('disconnect');
-
-  Future<dynamic> destroy() => _channel.invokeMethod('destroy');
 
   Future<dynamic> write(Uint8List? data) async {
     await _channel.invokeMethod('write', {"data": data});

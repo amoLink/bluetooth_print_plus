@@ -19,7 +19,7 @@
 
 - (void)handleMethodCall:(FlutterMethodCall *)call result:(FlutterResult)result {
     NSMutableDictionary *argumentsDict = call.arguments;
-    NSLog(@"Cpcl call.method : %@", call.method);
+    // NSLog(@"Cpcl call.method : %@", call.method);
     int x = [[argumentsDict valueForKey:@"x"] intValue];
     int y = [[argumentsDict valueForKey:@"y"] intValue];
     int width = [[argumentsDict valueForKey:@"width"] intValue];
@@ -40,15 +40,12 @@
     } else if ([@"image" isEqualToString:call.method]) {
         FlutterStandardTypedData *imageData = call.arguments[@"image"];
         UIImage *image = [UIImage imageWithData:imageData.data];
-        [self.cpclCommand addGraphics:EXPANDED WithXstart:x withYstart:y withImage:image withMaxWidth:image.size.width];
+        [self.cpclCommand addGraphics:COMPRESSED WithXstart:x withYstart:y withImage:image withMaxWidth:image.size.width];
         result(@(YES));
     } else if ([@"text" isEqualToString:call.method]) {
         int xMulti = [[argumentsDict valueForKey:@"xMulti"] intValue];
         int yMulti = [[argumentsDict valueForKey:@"yMulti"] intValue];
         int bold = [[argumentsDict valueForKey:@"bold"] boolValue];
-        if (bold) {
-            [self.cpclCommand setBold:YES];
-        }
         TEXTCOMMAND tc = T;
         switch (rotation) {
             case 0:
@@ -64,6 +61,9 @@
                 tc = T270;
                 break;
         }
+        if (bold) {
+            [self.cpclCommand setBold:YES];
+        }
         [self.cpclCommand addSetmagWithWidthScale:xMulti withHeightScale:yMulti];
         [self.cpclCommand addText:tc withFont:3 withXstart:x withYstart:y withContent:content];
         if (bold) {
@@ -74,12 +74,10 @@
         [self.cpclCommand addQrcode:BARCODE withXstart:x withYstart:y with:2 with:width withString:content];
         result(@(YES));
     }  else if ([@"barCode" isEqualToString:call.method]) {
-        int vertical = [[argumentsDict valueForKey:@"vertical"] boolValue];
+        BOOL vertical = [[argumentsDict valueForKey:@"vertical"] boolValue];
         NSString *codeType = [argumentsDict valueForKey:@"codeType"];
         CPCLBARCODETYPE ct = Code128;
-        if ([codeType isEqualToString:@"128"]) {
-            ct = Code128;
-        } else if ([codeType isEqualToString:@"UPCA"]) {
+        if ([codeType isEqualToString:@"UPCA"]) {
             ct = Upc_A;
         } else if ([codeType isEqualToString:@"UPCE"]) {
             ct = Upc_E;
@@ -94,7 +92,7 @@
         } else if ([codeType isEqualToString:@"CODABAR"]) {
             ct = Codebar;
         }
-        [self.cpclCommand addBarcode:vertical ? VBARCODE : BARCODE withType:ct withWidth:width withRatio:Point2 withHeight:height withXstart:x withYstart:y withString:content];
+        [self.cpclCommand addBarcode:vertical == YES ? VBARCODE : BARCODE withType:ct withWidth:width withRatio:Point2 withHeight:height withXstart:x withYstart:y withString:content];
         result(@(YES));
     } else if([@"line" isEqualToString:call.method]) {
         int endX = [[argumentsDict valueForKey:@"endX"] intValue];

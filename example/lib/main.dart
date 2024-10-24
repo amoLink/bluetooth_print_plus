@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'dart:async';
 
 import 'package:bluetooth_print_plus/bluetooth_print_plus.dart';
+import 'package:flutter/services.dart';
 
 import 'function_page.dart';
 
@@ -30,7 +33,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   final _bluetoothPrintPlus = BluetoothPrintPlus.instance;
-  bool _connected = false;
+  bool connected = false;
+  bool isReady = false;
   BluetoothDevice? _device;
 
   @override
@@ -40,37 +44,37 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   }
 
   Future<void> initBluetooth() async {
-    bool isConnected = await _bluetoothPrintPlus.isConnected ?? false;
+    /// listen state
     _bluetoothPrintPlus.state.listen((state) {
-      print('********** cur device status: $state **********');
-      switch (state) {
-        case BluetoothPrintPlus.connected:
+      print('********** state change: $state **********');
+      switch(state) {
+        case BPPState.blueOn:
+          isReady = true;
+          break;
+        case BPPState.blueOff:
+          isReady = false;
+          break;
+        case BPPState.deviceConnected:
           setState(() {
             if (_device == null) return;
-            _connected = true;
-            _bluetoothPrintPlus.stopScan();
-            Navigator.of(context).push(
-                MaterialPageRoute(builder: (ctx) => FunctionPage(_device!)));
+            connected = true;
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => FunctionPage(_device!)));
           });
           break;
-        case BluetoothPrintPlus.disconnected:
+        case BPPState.deviceDisconnected:
           setState(() {
             _device = null;
-            _connected = false;
+            connected = false;
           });
-          break;
-        default:
           break;
       }
     });
-
-    if (!mounted) return;
-
-    if (isConnected) {
-      setState(() {
-        _connected = true;
-      });
-    }
+    /// listen received data
+    _bluetoothPrintPlus.receivedData.listen((data) {
+      print('********** received data: $data **********');
+      /// do something...
+    });
   }
 
   @override
@@ -78,6 +82,16 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     return Scaffold(
       appBar: AppBar(
         title: const Text('BluetoothPrintPlus'),
+        actions: [
+          IconButton(
+            onPressed: () {
+              // SystemNavigator.pop();
+              // exit(0);
+              SystemChannels.platform.invokeMethod<void>('SystemNavigator.pop');
+            },
+            icon: const Icon( Icons.exit_to_app)
+          )
+        ],
       ),
       body: SafeArea(
         child: Column(
@@ -85,7 +99,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
             Expanded(
                 child: StreamBuilder<List<BluetoothDevice>>(
               stream: _bluetoothPrintPlus.scanResults,
-              initialData: [],
+              initialData: const [],
               builder: (c, snapshot) => ListView(
                 children: snapshot.data!
                     .map((d) => Container(
@@ -113,8 +127,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                               ),
                               ElevatedButton(
                                 onPressed: () async {
-                                  _bluetoothPrintPlus.connect(d);
                                   _device = d;
+                                  await _bluetoothPrintPlus.connect(d);
                                 },
                                 child: const Text("connect"),
                               )
@@ -131,7 +145,16 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
               child: ElevatedButton(
                 child: const Text("Search", style: TextStyle(fontSize: 16)),
                 onPressed: () {
-                  _bluetoothPrintPlus.isAvailable;
+                  if(isReady == false) {
+                    print(
+                      """
+                      Please check if Bluetooth is turned on ???
+                      Please check if Bluetooth is turned on ???
+                      Please check if Bluetooth is turned on ???
+                      """
+                    );
+                    return;
+                  }
                   _bluetoothPrintPlus.startScan(
                       timeout: const Duration(seconds: 30));
                 },

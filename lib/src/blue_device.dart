@@ -1,42 +1,29 @@
 /// BluetoothDevice
 class BluetoothDevice {
-  BluetoothDevice();
+  BluetoothDevice(this.name, this.address);
 
   /// printer name
-  String? name;
+  String name;
 
   /// printer id
-  String? address;
+  String address;
 
   /// type
-  int? type = 0;
-
-  /// connected ?
-  bool? connected = false;
+  int type = 0;
 
   /// BluetoothDevice obj from json
   factory BluetoothDevice.fromJson(Map<String, dynamic> json) {
-    return BluetoothDevice()
-      ..name = json['name'] as String?
-      ..address = json['address'] as String?
-      ..type = json['type'] as int?
-      ..connected = json['connected'] as bool?;
+    return BluetoothDevice(json['name'], json['address'])
+      ..type = json['type'] as int;
   }
 
-  /// json to BluetoothDevice obj
+  /// BluetoothDevice obj to json
   Map<String, dynamic> toJson() {
-    final val = <String, dynamic>{};
-
-    void writeNotNull(String key, dynamic value) {
-      if (value != null) {
-        val[key] = value;
-      }
-    }
-
-    writeNotNull('name', name);
-    writeNotNull('address', address);
-    writeNotNull('type', type);
-    writeNotNull('connected', connected);
-    return val;
+    final json = <String, dynamic>{
+      'name': name,
+      'address': address,
+      'type': type
+    };
+    return json;
   }
 }

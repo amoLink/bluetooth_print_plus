@@ -15,13 +15,11 @@
 @end
 
 @implementation TscCommandPlugin
-+ (void)registerWithRegistrar:(nonnull NSObject<FlutterPluginRegistrar> *)registrar {
-    
-}
++ (void)registerWithRegistrar:(nonnull NSObject<FlutterPluginRegistrar> *)registrar {}
 
 - (void)handleMethodCall:(FlutterMethodCall *)call result:(FlutterResult)result {
     NSMutableDictionary *argumentsDict = call.arguments;
-    NSLog(@"tsc call.method : %@", call.method);
+    // NSLog(@"tsc call.method : %@", call.method);
     int x = [[argumentsDict valueForKey:@"x"] intValue];
     int y = [[argumentsDict valueForKey:@"y"] intValue];
     int width = [[argumentsDict valueForKey:@"width"] intValue];

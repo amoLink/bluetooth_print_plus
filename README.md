@@ -13,6 +13,7 @@ Bluetooth Print Plus is a Bluetooth plugin used to print thermal printers in [Fl
 </strong>
 
 ## FAQ Support
+
 [**QQ group**](http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=srMhoE9RiFhIrhDoJB_jZCsaTvw09KaD&authKey=k4fAypkX3gSG7REanSfi0OZCXJxprJdnZ1y2BU2QAMbgOt0T%2F1hIr%2BikbO3kQPJc&noverify=0&group_code=904457621) &nbsp;&nbsp;&nbsp; [**TG group**](https://t.me/+a7KAkNjHFS81MGNi)
 
 ## Buy Me A Coffee/请我喝杯咖啡
@@ -51,41 +52,37 @@ Bluetooth Print Plus is a Bluetooth plugin used to print thermal printers in [Fl
 dependencies:
   flutter:
     sdk: flutter
-  bluetooth_print_plus: ^2.2.0
+  bluetooth_print_plus: ^2.3.0
 ```
 
 ### Add permissions for Bluetooth
-
+--- 
 We need to add the permission to use Bluetooth and access location:
 
 #### **Android**
-
 In the **android/app/src/main/AndroidManifest.xml** let’s add:
-
 ```xml
-    <uses-permission android:name="android.permission.BLUETOOTH" />
-    <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
-    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+<uses-permission android:name="android.permission.BLUETOOTH" />
+<uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
+<uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+<uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 ```
 
 #### **IOS**
-
 In the **ios/Runner/Info.plist** let’s add:
-
 ```dart
-    <key>NSBluetoothAlwaysUsageDescription</key>
-    <string>Need BLE permission</string>
-    <key>NSBluetoothPeripheralUsageDescription</key>
-    <string>Need BLE permission</string>
-    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-    <string>Need Location permission</string>
-    <key>NSLocationAlwaysUsageDescription</key>
-    <string>Need Location permission</string>
-    <key>NSLocationWhenInUseUsageDescription</key>
-    <string>Need Location permission</string>
+<key>NSBluetoothAlwaysUsageDescription</key>
+<string>Need BLE permission</string>
+<key>NSBluetoothPeripheralUsageDescription</key>
+<string>Need BLE permission</string>
+<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+<string>Need Location permission</string>
+<key>NSLocationAlwaysUsageDescription</key>
+<string>Need Location permission</string>
+<key>NSLocationWhenInUseUsageDescription</key>
+<string>Need Location permission</string>
 ```
 
 For location permissions on iOS see more at: [https://developer.apple.com/documentation/corelocation/requesting_authorization_for_location_services](https://developer.apple.com/documentation/corelocation/requesting_authorization_for_location_services)
@@ -96,6 +93,36 @@ For location permissions on iOS see more at: [https://developer.apple.com/docume
 import 'package:bluetooth_print_plus/bluetooth_print_plus.dart';
 
 final _bluetoothPrintPlus = BluetoothPrintPlus.instance;
+```
+
+
+### listen
+- **state**
+```dart
+_bluetoothPrintPlus.state.listen((state) {
+  print('********** state change: $state **********');
+  switch(state) {
+    case BPPState.blueOn:
+      /// blueOn, do something
+      break;
+    case BPPState.blueOff:
+      /// blueOff, do something
+      break;
+    case BPPState.deviceConnected:
+      /// deviceConnected, do something
+      break;
+    case BPPState.deviceDisconnected:
+      /// deviceDisconnected, do something 
+      break;
+  }
+});
+```
+- **received Data**
+```dart
+_bluetoothPrintPlus.receivedData.listen((data) {
+  print('********** received data: $data **********');
+  /// received data, do something...
+});
 ```
 
 ### scan
@@ -113,34 +140,7 @@ StreamBuilder<List<BluetoothDevice>>(
       padding: const EdgeInsets.only(left: 10, right: 10, bottom: 5),
       child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(d.name ?? ''),
-                      Text(
-                        d.address ?? 'null',
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                            fontSize: 12,
-                            color: Colors.grey
-                        ),
-                      ),
-                      const Divider(),
-                    ],
-                  )
-              ),
-              const SizedBox(width: 10,),
-              ElevatedButton(
-                  onPressed: () async {
-                      _bluetoothPrintPlus.stopScan();
-                      _bluetoothPrintPlus.connect(d);
-                      _device = d;
-                  },
-                  child: const Text("connect"),
-              )
-            ],
+            children: [ .... ],
           ),
     )).toList(),
   ),
@@ -161,41 +161,20 @@ or
 await  BluetoothPrintPlus.instance.disconnect();
 ```
 
-### listen state
+### print/write 
 
 ```dart
-_bluetoothPrintPlus.state.listen((state) {
-  print('cur device status: $state');
-  switch (state) {
-    case BluetoothPrint.CONNECTED:
-      setState(() {
-        _connected = true;
-      });
-      break;
-    case BluetoothPrint.DISCONNECTED:
-      setState(() {
-        _connected = false;
-      });
-      break;
-    default:
-      break;
-  }
-});
-```
-
-### print (tsc command, label mode)
-
-```dart
-    final ByteData bytes = await rootBundle.load("assets/dithered-image.png");
-    final Uint8List image = bytes.buffer.asUint8List();
-    await tscCommand.cleanCommand();
-    await tscCommand.cls();
-    await tscCommand.size(width: 76, height: 130);
-    await tscCommand.image(image: image, x: 50, y: 60);
-    await tscCommand.print(1);
-    final cmd = await tscCommand.getCommand();
-    if (cmd == null) return;
-    BluetoothPrintPlus.instance.write(cmd);
+/// for example: write tsc command
+final ByteData bytes = await rootBundle.load("assets/dithered-image.png");
+final Uint8List image = bytes.buffer.asUint8List();
+await tscCommand.cleanCommand();
+await tscCommand.cls();
+await tscCommand.size(width: 76, height: 130);
+await tscCommand.image(image: image, x: 50, y: 60);
+await tscCommand.print(1);
+final cmd = await tscCommand.getCommand();
+if (cmd == null) return;
+BluetoothPrintPlus.instance.write(cmd);
 ```
 
 ## Troubleshooting
@@ -217,4 +196,5 @@ info.plist add:
 ```
 
 ## Stargazers over time
+
 [![Stargazers over time](https://starchart.cc/amoLink/bluetooth_print_plus.svg?variant=light)](https://starchart.cc/amoLink/bluetooth_print_plus)
