@@ -39,26 +39,26 @@ class BluetoothPrintPlus {
   /// Gets the current state of the Bluetooth module
   Stream<BPPState> get state async* {
     yield await _channel.invokeMethod('state').then((s) {
-      if(s == 0) {
+      if (s == 0) {
         return BPPState.blueOn;
-      } else if(s == 1) {
+      } else if (s == 1) {
         return BPPState.blueOff;
-      } else if(s == 2) {
+      } else if (s == 2) {
         return BPPState.deviceConnected;
-      } else if(s == 3) {
+      } else if (s == 3) {
         return BPPState.deviceDisconnected;
       }
       return BPPState.deviceDisconnected;
     });
 
     yield* _stateChannel.receiveBroadcastStream().map((s) {
-      if(s == 0) {
+      if (s == 0) {
         return BPPState.blueOn;
-      } else if(s == 1) {
+      } else if (s == 1) {
         return BPPState.blueOff;
-      } else if(s == 2) {
+      } else if (s == 2) {
         return BPPState.deviceConnected;
-      } else if(s == 3) {
+      } else if (s == 3) {
         return BPPState.deviceDisconnected;
       }
       return BPPState.deviceDisconnected;
@@ -70,8 +70,8 @@ class BluetoothPrintPlus {
     yield* BluetoothPrintPlus.instance._methodStream
         .where((m) => m.method == "ReceivedData")
         .map((m) {
-          return m.arguments;
-        });
+      return m.arguments;
+    });
   }
 
   /// Starts a scan for Bluetooth Low Energy devices
@@ -104,23 +104,23 @@ class BluetoothPrintPlus {
         .takeUntil(Rx.merge(killStreams))
         .doOnDone(stopScan)
         .map((map) {
-            final device = BluetoothDevice.fromJson(Map<String, dynamic>.from(map));
-            final List<BluetoothDevice> list = _scanResults.value;
-            int newIndex = -1;
-            list.asMap().forEach((index, e) {
-              if (e.address == device.address) {
-                newIndex = index;
-              }
-            });
+      final device = BluetoothDevice.fromJson(Map<String, dynamic>.from(map));
+      final List<BluetoothDevice> list = _scanResults.value;
+      int newIndex = -1;
+      list.asMap().forEach((index, e) {
+        if (e.address == device.address) {
+          newIndex = index;
+        }
+      });
 
-            if (newIndex != -1) {
-              list[newIndex] = device;
-            } else {
-              list.add(device);
-            }
-            _scanResults.add(list);
-            return device;
-        });
+      if (newIndex != -1) {
+        list[newIndex] = device;
+      } else {
+        list.add(device);
+      }
+      _scanResults.add(list);
+      return device;
+    });
   }
 
   Future startScan({

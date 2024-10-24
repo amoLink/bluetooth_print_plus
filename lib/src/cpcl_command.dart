@@ -16,11 +16,7 @@ class CpclCommand {
     return command;
   }
 
-  Future<void> size({
-    required width,
-    required height,
-    int copies = 1
-  }) async {
+  Future<void> size({required width, required height, int copies = 1}) async {
     Map<String, dynamic> params = {
       "width": width,
       "height": height,
@@ -96,13 +92,12 @@ class CpclCommand {
     await methodChannel.invokeMethod<void>('barCode', params);
   }
 
-  Future<void> line({
-    required int x,
-    required int y,
-    required int endX,
-    required int endY,
-    int width = 2
-  }) async {
+  Future<void> line(
+      {required int x,
+      required int y,
+      required int endX,
+      required int endY,
+      int width = 2}) async {
     Map<String, dynamic> params = {
       "x": x,
       "y": y,

@@ -86,17 +86,16 @@ class TscCommand {
     await methodChannel.invokeMethod<void>('qrCode', params);
   }
 
-  Future<void> barCode({
-    required String content,
-    int x = 0,
-    int y = 0,
-    BarCodeType codeType = BarCodeType.c_128,
-    Rotation rotation = Rotation.r_0,
-    int height = 100,
-    bool readable = true,
-    int narrow = 2,
-    int wide = 4
-  }) async {
+  Future<void> barCode(
+      {required String content,
+      int x = 0,
+      int y = 0,
+      BarCodeType codeType = BarCodeType.c_128,
+      Rotation rotation = Rotation.r_0,
+      int height = 100,
+      bool readable = true,
+      int narrow = 2,
+      int wide = 4}) async {
     Map<String, dynamic> params = {
       "content": content,
       "x": x,
@@ -126,13 +125,12 @@ class TscCommand {
     await methodChannel.invokeMethod<void>('bar', params);
   }
 
-  Future<void> box({
-    required int x,
-    required int y,
-    required int endX,
-    required int endY,
-    int linThickness = 2
-  }) async {
+  Future<void> box(
+      {required int x,
+      required int y,
+      required int endX,
+      required int endY,
+      int linThickness = 2}) async {
     Map<String, dynamic> params = {
       "x": x,
       "y": y,

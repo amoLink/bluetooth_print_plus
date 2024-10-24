@@ -47,7 +47,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     /// listen state
     _bluetoothPrintPlus.state.listen((state) {
       print('********** state change: $state **********');
-      switch(state) {
+      switch (state) {
         case BPPState.blueOn:
           isReady = true;
           break;
@@ -58,8 +58,10 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           setState(() {
             if (_device == null) return;
             connected = true;
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => FunctionPage(_device!)));
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => FunctionPage(_device!)));
           });
           break;
         case BPPState.deviceDisconnected:
@@ -70,9 +72,11 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           break;
       }
     });
+
     /// listen received data
     _bluetoothPrintPlus.receivedData.listen((data) {
       print('********** received data: $data **********');
+
       /// do something...
     });
   }
@@ -84,13 +88,13 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         title: const Text('BluetoothPrintPlus'),
         actions: [
           IconButton(
-            onPressed: () {
-              // SystemNavigator.pop();
-              // exit(0);
-              SystemChannels.platform.invokeMethod<void>('SystemNavigator.pop');
-            },
-            icon: const Icon( Icons.exit_to_app)
-          )
+              onPressed: () {
+                // SystemNavigator.pop();
+                // exit(0);
+                SystemChannels.platform
+                    .invokeMethod<void>('SystemNavigator.pop');
+              },
+              icon: const Icon(Icons.exit_to_app))
         ],
       ),
       body: SafeArea(
@@ -145,14 +149,12 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
               child: ElevatedButton(
                 child: const Text("Search", style: TextStyle(fontSize: 16)),
                 onPressed: () {
-                  if(isReady == false) {
-                    print(
-                      """
+                  if (isReady == false) {
+                    print("""
                       Please check if Bluetooth is turned on ???
                       Please check if Bluetooth is turned on ???
                       Please check if Bluetooth is turned on ???
-                      """
-                    );
+                      """);
                     return;
                   }
                   _bluetoothPrintPlus.startScan(
