@@ -86,16 +86,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     return Scaffold(
       appBar: AppBar(
         title: const Text('BluetoothPrintPlus'),
-        actions: [
-          IconButton(
-              onPressed: () {
-                // SystemNavigator.pop();
-                // exit(0);
-                SystemChannels.platform
-                    .invokeMethod<void>('SystemNavigator.pop');
-              },
-              icon: const Icon(Icons.exit_to_app))
-        ],
       ),
       body: SafeArea(
         child: Column(

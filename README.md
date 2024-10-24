@@ -52,7 +52,7 @@ Bluetooth Print Plus is a Bluetooth plugin used to print thermal printers in [Fl
 dependencies:
   flutter:
     sdk: flutter
-  bluetooth_print_plus: ^2.3.2
+  bluetooth_print_plus: ^2.3.3
 ```
 
 ### Add permissions for Bluetooth
