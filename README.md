@@ -52,15 +52,19 @@ Bluetooth Print Plus is a Bluetooth plugin used to print thermal printers in [Fl
 dependencies:
   flutter:
     sdk: flutter
-  bluetooth_print_plus: ^2.3.0
+  bluetooth_print_plus: ^2.3.1
 ```
 
 ### Add permissions for Bluetooth
---- 
+
+---
+
 We need to add the permission to use Bluetooth and access location:
 
 #### **Android**
+
 In the **android/app/src/main/AndroidManifest.xml** let’s add:
+
 ```xml
 <uses-permission android:name="android.permission.BLUETOOTH" />
 <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
@@ -71,7 +75,9 @@ In the **android/app/src/main/AndroidManifest.xml** let’s add:
 ```
 
 #### **IOS**
+
 In the **ios/Runner/Info.plist** let’s add:
+
 ```dart
 <key>NSBluetoothAlwaysUsageDescription</key>
 <string>Need BLE permission</string>
@@ -95,9 +101,10 @@ import 'package:bluetooth_print_plus/bluetooth_print_plus.dart';
 final _bluetoothPrintPlus = BluetoothPrintPlus.instance;
 ```
 
-
 ### listen
+
 - **state**
+
 ```dart
 _bluetoothPrintPlus.state.listen((state) {
   print('********** state change: $state **********');
@@ -112,12 +119,14 @@ _bluetoothPrintPlus.state.listen((state) {
       /// deviceConnected, do something
       break;
     case BPPState.deviceDisconnected:
-      /// deviceDisconnected, do something 
+      /// deviceDisconnected, do something
       break;
   }
 });
 ```
+
 - **received Data**
+
 ```dart
 _bluetoothPrintPlus.receivedData.listen((data) {
   print('********** received data: $data **********');
@@ -161,7 +170,7 @@ or
 await  BluetoothPrintPlus.instance.disconnect();
 ```
 
-### print/write 
+### print/write
 
 ```dart
 /// for example: write tsc command

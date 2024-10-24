@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:rxdart/rxdart.dart';
 
 import '../bluetooth_print_plus.dart';
-import 'blue_device.dart';
 
 class BluetoothPrintPlus {
   BluetoothPrintPlus._() {
