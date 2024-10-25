@@ -9,7 +9,7 @@ import 'package:flutter/services.dart';
 import 'function_page.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return const MaterialApp(
+    return MaterialApp(
       home: HomePage(),
     );
   }
@@ -34,7 +34,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   final _bluetoothPrintPlus = BluetoothPrintPlus.instance;
   bool connected = false;
-  bool isReady = false;
+  bool isBlueOn = false;
   BluetoothDevice? _device;
 
   @override
@@ -44,15 +44,23 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   }
 
   Future<void> initBluetooth() async {
+    /// listen isScanning
+    _bluetoothPrintPlus.isScanning.listen((event) {
+      print('********** isScanning: $event **********');
+      if (mounted) {
+        setState(() {});
+      }
+    });
+
     /// listen state
     _bluetoothPrintPlus.state.listen((state) {
       print('********** state change: $state **********');
       switch (state) {
         case BPPState.blueOn:
-          isReady = true;
+          isBlueOn = true;
           break;
         case BPPState.blueOff:
-          isReady = false;
+          isBlueOn = false;
           break;
         case BPPState.deviceConnected:
           setState(() {
@@ -96,9 +104,9 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
               initialData: const [],
               builder: (c, snapshot) => ListView(
                 children: snapshot.data!
-                    .map((d) => Container(
-                          padding: const EdgeInsets.only(
-                              left: 10, right: 10, bottom: 5),
+                    .map((device) => Container(
+                          padding:
+                              EdgeInsets.only(left: 10, right: 10, bottom: 5),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -106,23 +114,23 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                   child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(d.name ?? ''),
+                                  Text(device.name),
                                   Text(
-                                    d.address ?? 'null',
+                                    device.address,
                                     overflow: TextOverflow.ellipsis,
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                         fontSize: 12, color: Colors.grey),
                                   ),
-                                  const Divider(),
+                                  Divider(),
                                 ],
                               )),
-                              const SizedBox(
+                              SizedBox(
                                 width: 10,
                               ),
-                              ElevatedButton(
+                              OutlinedButton(
                                 onPressed: () async {
-                                  _device = d;
-                                  await _bluetoothPrintPlus.connect(d);
+                                  _device = device;
+                                  await _bluetoothPrintPlus.connect(device);
                                 },
                                 child: const Text("connect"),
                               )
@@ -132,29 +140,49 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                     .toList(),
               ),
             )),
-            Container(
-              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-              width: double.infinity,
-              height: 60,
-              child: ElevatedButton(
-                child: const Text("Search", style: TextStyle(fontSize: 16)),
-                onPressed: () {
-                  if (isReady == false) {
-                    print("""
-                      Please check if Bluetooth is turned on ???
-                      Please check if Bluetooth is turned on ???
-                      Please check if Bluetooth is turned on ???
-                      """);
-                    return;
-                  }
-                  _bluetoothPrintPlus.startScan(
-                      timeout: const Duration(seconds: 30));
-                },
-              ),
-            )
           ],
         ),
       ),
+      floatingActionButton: buildScanButton(context),
     );
+  }
+
+  Widget buildScanButton(BuildContext context) {
+    if (_bluetoothPrintPlus.isScanningNow) {
+      return FloatingActionButton(
+        onPressed: onStopPressed,
+        backgroundColor: Colors.red,
+        child: Icon(Icons.stop),
+      );
+    } else {
+      return FloatingActionButton(
+          onPressed: onScanPressed,
+          backgroundColor: Colors.green,
+          child: Text("SCAN"));
+    }
+  }
+
+  Future onScanPressed() async {
+    try {
+      if (isBlueOn == false) {
+        print("""
+          Please check if Bluetooth is turned on !!!
+          Please check if Bluetooth is turned on !!!
+          Please check if Bluetooth is turned on !!!
+          """);
+        return;
+      }
+      await _bluetoothPrintPlus.startScan(timeout: Duration(seconds: 10));
+    } catch (e) {
+      print("onScanPressed error: $e");
+    }
+  }
+
+  Future onStopPressed() async {
+    try {
+      _bluetoothPrintPlus.stopScan();
+    } catch (e) {
+      print("onStopPressed error: $e");
+    }
   }
 }

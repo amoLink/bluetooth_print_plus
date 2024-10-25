@@ -1,4 +1,11 @@
-## [2.3.3] - 2024-10-24
+## [2.3.4]
+
+### Changed
+
+- 优化安卓蓝牙扫描 - improve Android Bluetooth `scan`;
+- 优化example - improve `example`;
+
+## [2.3.3] 
 
 ### Changed
 

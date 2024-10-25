@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/services.dart';
-import 'package:rxdart/rxdart.dart';
 
 import '../bluetooth_print_plus.dart';
 
@@ -25,16 +24,18 @@ class BluetoothPrintPlus {
   final StreamController<MethodCall> _methodStreamController =
       StreamController.broadcast();
 
-  final BehaviorSubject<bool> _isScanning = BehaviorSubject.seeded(false);
+  static final _isScanning = StreamControllerReEmit<bool>(initialValue: false);
 
   Stream<bool> get isScanning => _isScanning.stream;
 
-  final BehaviorSubject<List<BluetoothDevice>> _scanResults =
-      BehaviorSubject.seeded([]);
+  bool get isScanningNow => _isScanning.latestValue;
+
+  static final _scanResults =
+      StreamControllerReEmit<List<BluetoothDevice>>(initialValue: []);
 
   Stream<List<BluetoothDevice>> get scanResults => _scanResults.stream;
 
-  final PublishSubject _stopScanPill = PublishSubject();
+  static Timer? _scanTimeout;
 
   /// Gets the current state of the Bluetooth module
   Stream<BPPState> get state async* {
@@ -76,33 +77,22 @@ class BluetoothPrintPlus {
 
   /// Starts a scan for Bluetooth Low Energy devices
   /// Timeout closes the stream after a specified [Duration]
-  Stream<BluetoothDevice> scan({
-    Duration? timeout,
-  }) async* {
+  Stream<BluetoothDevice> scan({Duration? timeout}) async* {
     // Emit to isScanning
     _isScanning.add(true);
-    final killStreams = <Stream>[];
-    killStreams.add(_stopScanPill);
-    if (timeout != null) {
-      killStreams.add(Rx.timer(null, timeout));
-    }
     // Clear scan results list
     _scanResults.add(<BluetoothDevice>[]);
-
-    try {
-      await _channel.invokeMethod('startScan');
-    } catch (e) {
-      print('Error starting scan.');
-      _stopScanPill.add(null);
-      _isScanning.add(false);
-      throw e;
+    // invoke startScan method
+    await _channel
+        .invokeMethod('startScan')
+        .onError((error, stackTrace) => _isScanning.add(false));
+    if (timeout != null) {
+      _scanTimeout = Timer(timeout, stopScan);
     }
 
     yield* BluetoothPrintPlus.instance._methodStream
         .where((m) => m.method == "ScanResult")
         .map((m) => m.arguments)
-        .takeUntil(Rx.merge(killStreams))
-        .doOnDone(stopScan)
         .map((map) {
       final device = BluetoothDevice.fromJson(Map<String, dynamic>.from(map));
       final List<BluetoothDevice> list = _scanResults.value;
@@ -132,9 +122,13 @@ class BluetoothPrintPlus {
 
   /// Stops a scan for Bluetooth Low Energy devices
   Future stopScan() async {
-    await _channel.invokeMethod('stopScan');
-    _stopScanPill.add(null);
-    _isScanning.add(false);
+    if (isScanningNow) {
+      await _channel.invokeMethod('stopScan');
+      _isScanning.add(false);
+      _scanTimeout?.cancel();
+    } else {
+      print("stopScan: already stopped");
+    }
   }
 
   Future<dynamic> connect(BluetoothDevice device) =>

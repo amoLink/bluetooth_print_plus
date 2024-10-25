@@ -157,7 +157,7 @@ typedef NS_ENUM(NSInteger, BPPState) {
             [dict setValue:peripheral.identifier.UUIDString forKey:@"address"];
             [dict setValue:@(0) forKey:@"type"];
             
-            [weakself.channel invokeMethod:@"ScanResult" arguments:device];
+            [weakself.channel invokeMethod:@"ScanResult" arguments:dict];
         }
     }];
     

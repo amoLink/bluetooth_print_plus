@@ -201,24 +201,6 @@ public class BluetoothPrintPlusPlugin
     }
   }
 
-  private final BroadcastReceiver mFindBlueToothReceiver = new BroadcastReceiver() {
-    @Override
-    public void onReceive(Context context, Intent intent) {
-      String action = intent.getAction();
-      if (BluetoothDevice.ACTION_FOUND.equals(action)) {
-        BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-        if (device == null || device.getName() == null) return;
-        BluetoothParameter parameter = new BluetoothParameter();
-        int rssi = Objects.requireNonNull(intent.getExtras()).getShort(BluetoothDevice.EXTRA_RSSI);
-        parameter.setBluetoothName(device.getName());
-        parameter.setBluetoothMac(device.getAddress());
-        parameter.setBluetoothStrength(rssi + "");
-        LogUtils.i(TAG, "\nBlueToothName: " + device.getName() + "\nMacAddress: " + device.getAddress() + "\nrssi: " + rssi);
-        invokeMethodUIThread("ScanResult", device);
-      }
-    }
-  };
-
   private void initBroadcast() {
     try {
       IntentFilter filter = new IntentFilter();
@@ -226,11 +208,29 @@ public class BluetoothPrintPlusPlugin
       filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
       // Register for broadcasts when discovery has finished
       filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);// 蓝牙状态改变
-      context.registerReceiver(mFindBlueToothReceiver, filter);
+      // context.registerReceiver(mFindBlueToothReceiver, filter);
     } catch (Exception ignored) {
 
     }
   }
+
+//  private final BroadcastReceiver mFindBlueToothReceiver = new BroadcastReceiver() {
+//    @Override
+//    public void onReceive(Context context, Intent intent) {
+//      String action = intent.getAction();
+//      if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+//        BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+//        if (device == null || device.getName() == null) return;
+//        BluetoothParameter parameter = new BluetoothParameter();
+//        int rssi = Objects.requireNonNull(intent.getExtras()).getShort(BluetoothDevice.EXTRA_RSSI);
+//        parameter.setBluetoothName(device.getName());
+//        parameter.setBluetoothMac(device.getAddress());
+//        parameter.setBluetoothStrength(rssi + "");
+//        LogUtils.i(TAG, "\nBlueToothName: " + device.getName() + "\nMacAddress: " + device.getAddress() + "\nrssi: " + rssi);
+//        invokeMethodUIThread("ScanResult", device);
+//      }
+//    }
+//  };
 
   private void state(Result result) {
     try {
@@ -253,8 +253,11 @@ public class BluetoothPrintPlusPlugin
     LogUtils.i(TAG, "start scan...");
     try {
       String[] perms = {
-        Manifest.permission.ACCESS_COARSE_LOCATION,
-        Manifest.permission.ACCESS_FINE_LOCATION
+          Manifest.permission.BLUETOOTH,
+          Manifest.permission.BLUETOOTH_ADMIN,
+          Manifest.permission.BLUETOOTH_CONNECT,
+          Manifest.permission.BLUETOOTH_SCAN,
+          Manifest.permission.ACCESS_FINE_LOCATION,
       };
       if (EasyPermissions.hasPermissions(this.context, perms)) {
         // Already have permission, do the thing
@@ -292,14 +295,18 @@ public class BluetoothPrintPlusPlugin
     public void onScanResult(int callbackType, ScanResult result) {
       BluetoothDevice device = result.getDevice();
       if (device != null && device.getName() != null) {
+        LogUtils.i(TAG, "\nBlueToothName: " + device.getName() + "\nMacAddress: " + device.getAddress());
         invokeMethodUIThread("ScanResult", device);
       }
     }
   };
 
   private void startScan() throws IllegalStateException {
+//    stopScan();
     initBroadcast();
-    mBluetoothAdapter.startDiscovery();
+//    mBluetoothAdapter.startDiscovery();
+    BluetoothLeScanner scanner = mBluetoothAdapter.getBluetoothLeScanner();
+    scanner.startScan(mScanCallback);
   }
 
   private void stopScan() {
