@@ -1,26 +1,28 @@
 package com.example.bluetooth_print_plus.bluetooth_print_plus;
 
+import static android.bluetooth.BluetoothDevice.DEVICE_TYPE_LE;
+
+import static androidx.core.app.ActivityCompat.startActivityForResult;
+
 import android.Manifest;
 import android.app.Activity;
 import android.app.Application;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothManager;
-import android.bluetooth.le.BluetoothLeScanner;
-import android.bluetooth.le.ScanCallback;
-import android.bluetooth.le.ScanResult;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
+
+import androidx.annotation.RequiresApi;
 
 import com.example.bluetooth_print_plus.bluetooth_print_plus.payload.BPPState;
 import com.example.bluetooth_print_plus.bluetooth_print_plus.payload.BluetoothParameter;
 import com.example.bluetooth_print_plus.bluetooth_print_plus.payload.Printer;
-import com.example.bluetooth_print_plus.bluetooth_print_plus.payload.ThreadPool;
 import com.example.bluetooth_print_plus.bluetooth_print_plus.payload.ThreadPoolManager;
 import com.gprinter.bean.PrinterDevices;
 import com.gprinter.io.PortManager;
@@ -46,11 +48,11 @@ import java.util.Objects;
 
 /**
  * BluetoothPrintPlusPlugin
- * 
+ *
  * @author amoLink
  */
 public class BluetoothPrintPlusPlugin
-    implements FlutterPlugin, ActivityAware, MethodCallHandler, RequestPermissionsResultListener {
+        implements FlutterPlugin, ActivityAware, MethodCallHandler, RequestPermissionsResultListener {
   private static final String TAG = "BluetoothPrintPlusPlugin";
   private static final int REQUEST_LOCATION_PERMISSIONS = 1452;
   private final Object initializationLock = new Object();
@@ -58,14 +60,13 @@ public class BluetoothPrintPlusPlugin
   private Application application;
   private Activity activity;
   private Result pendingResult;
-  private ThreadPool threadPool;
   public PortManager portManager = null;
-  private BluetoothManager mBluetoothManager;
   private BluetoothAdapter mBluetoothAdapter;
 
   private FlutterPluginBinding pluginBinding;
   private ActivityPluginBinding activityBinding;
   private MethodChannel channel;
+  private EventSink sink;
   private MethodChannel tscChannel;
   private MethodChannel cpclChannel;
   private MethodChannel escChannel;
@@ -90,10 +91,10 @@ public class BluetoothPrintPlusPlugin
   public void onAttachedToActivity(ActivityPluginBinding binding) {
     activityBinding = binding;
     setup(
-        pluginBinding.getBinaryMessenger(),
-        (Application) pluginBinding.getApplicationContext(),
-        activityBinding.getActivity(),
-        activityBinding
+            pluginBinding.getBinaryMessenger(),
+            (Application) pluginBinding.getApplicationContext(),
+            activityBinding.getActivity(),
+            activityBinding
     );
   }
 
@@ -113,10 +114,10 @@ public class BluetoothPrintPlusPlugin
   }
 
   private void setup(
-      final BinaryMessenger messenger,
-      final Application application,
-      final Activity activity,
-      final ActivityPluginBinding activityBinding
+          final BinaryMessenger messenger,
+          final Application application,
+          final Activity activity,
+          final ActivityPluginBinding activityBinding
   ) {
     synchronized (initializationLock) {
       LogUtils.i(TAG, "setup");
@@ -137,8 +138,7 @@ public class BluetoothPrintPlusPlugin
       // state Channel
       stateChannel = new EventChannel(messenger, "bluetooth_print_plus/state");
       stateChannel.setStreamHandler(stateHandler);
-      mBluetoothManager = (BluetoothManager) application.getSystemService(Context.BLUETOOTH_SERVICE);
-      mBluetoothAdapter = mBluetoothManager.getAdapter();
+      mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
       activityBinding.addRequestPermissionsResultListener(this);
     }
@@ -146,6 +146,7 @@ public class BluetoothPrintPlusPlugin
 
   private void tearDown() {
     LogUtils.i(TAG, "teardown");
+    context.unregisterReceiver(mFindBlueToothReceiver);
     context = null;
     activityBinding.removeRequestPermissionsResultListener(this);
     activityBinding = null;
@@ -154,7 +155,6 @@ public class BluetoothPrintPlusPlugin
     stateChannel.setStreamHandler(null);
     stateChannel = null;
     mBluetoothAdapter = null;
-    mBluetoothManager = null;
     application = null;
   }
 
@@ -169,7 +169,7 @@ public class BluetoothPrintPlusPlugin
         state(result);
         break;
       case "startScan":
-        startScan(call, result);
+        startScan(result);
         break;
       case "stopScan":
         stopScan();
@@ -206,31 +206,30 @@ public class BluetoothPrintPlusPlugin
       IntentFilter filter = new IntentFilter();
       filter.addAction(BluetoothDevice.ACTION_FOUND);
       filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
-      // Register for broadcasts when discovery has finished
-      filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);// 蓝牙状态改变
-      // context.registerReceiver(mFindBlueToothReceiver, filter);
+      context.registerReceiver(mFindBlueToothReceiver, filter);
     } catch (Exception ignored) {
 
     }
   }
 
-//  private final BroadcastReceiver mFindBlueToothReceiver = new BroadcastReceiver() {
-//    @Override
-//    public void onReceive(Context context, Intent intent) {
-//      String action = intent.getAction();
-//      if (BluetoothDevice.ACTION_FOUND.equals(action)) {
-//        BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-//        if (device == null || device.getName() == null) return;
-//        BluetoothParameter parameter = new BluetoothParameter();
-//        int rssi = Objects.requireNonNull(intent.getExtras()).getShort(BluetoothDevice.EXTRA_RSSI);
-//        parameter.setBluetoothName(device.getName());
-//        parameter.setBluetoothMac(device.getAddress());
-//        parameter.setBluetoothStrength(rssi + "");
-//        LogUtils.i(TAG, "\nBlueToothName: " + device.getName() + "\nMacAddress: " + device.getAddress() + "\nrssi: " + rssi);
-//        invokeMethodUIThread("ScanResult", device);
-//      }
-//    }
-//  };
+  private final BroadcastReceiver mFindBlueToothReceiver = new BroadcastReceiver() {
+    @Override
+    public void onReceive(Context context, Intent intent) {
+      String action = intent.getAction();
+      if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+        BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+        if (device == null || device.getName() == null) return;
+        if (device.getType() == DEVICE_TYPE_LE) return;
+        BluetoothParameter parameter = new BluetoothParameter();
+        int rssi = Objects.requireNonNull(intent.getExtras()).getShort(BluetoothDevice.EXTRA_RSSI);
+        parameter.setBluetoothName(device.getName());
+        parameter.setBluetoothMac(device.getAddress());
+        parameter.setBluetoothStrength(rssi + "");
+        LogUtils.i(TAG, "\nBlueToothName: " + device.getName() + "\nMacAddress: " + device.getAddress() + "\nrssi: " + rssi);
+        invokeMethodUIThread(device);
+      }
+    }
+  };
 
   private void state(Result result) {
     try {
@@ -249,7 +248,7 @@ public class BluetoothPrintPlusPlugin
     }
   }
 
-  private void startScan(MethodCall call, Result result) {
+  private void startScan(Result result) {
     LogUtils.i(TAG, "start scan...");
     try {
       String[] perms = {
@@ -265,10 +264,10 @@ public class BluetoothPrintPlusPlugin
       } else {
         // Do not have permissions, request them now
         EasyPermissions.requestPermissions(
-            this.activity,
-            "Bluetooth requires location permission!!!",
-            REQUEST_LOCATION_PERMISSIONS,
-            perms);
+                this.activity,
+                "Bluetooth requires location permission!!!",
+                REQUEST_LOCATION_PERMISSIONS,
+                perms);
       }
       result.success(null);
     } catch (Exception e) {
@@ -276,44 +275,27 @@ public class BluetoothPrintPlusPlugin
     }
   }
 
-  private void invokeMethodUIThread(final String name, final BluetoothDevice device) {
+  private void invokeMethodUIThread(BluetoothDevice device) {
     final Map<String, Object> ret = new HashMap<>();
     ret.put("address", device.getAddress());
     ret.put("name", device.getName());
     ret.put("type", device.getType());
     new Handler(Looper.getMainLooper()).post(() -> {
       if (!ret.isEmpty()) {
-        channel.invokeMethod(name, ret);
+        channel.invokeMethod("ScanResult", ret);
       } else {
-        LogUtils.w(TAG, "invokeMethodUIThread: tried to call method on closed channel: " + name);
+        LogUtils.w(TAG, "invokeMethodUIThread: tried to call method on closed channel: " + "ScanResult");
       }
     });
   }
 
-  private final ScanCallback mScanCallback = new ScanCallback() {
-    @Override
-    public void onScanResult(int callbackType, ScanResult result) {
-      BluetoothDevice device = result.getDevice();
-      if (device != null && device.getName() != null) {
-        LogUtils.i(TAG, "\nBlueToothName: " + device.getName() + "\nMacAddress: " + device.getAddress());
-        invokeMethodUIThread("ScanResult", device);
-      }
-    }
-  };
-
   private void startScan() throws IllegalStateException {
-//    stopScan();
     initBroadcast();
-//    mBluetoothAdapter.startDiscovery();
-    BluetoothLeScanner scanner = mBluetoothAdapter.getBluetoothLeScanner();
-    scanner.startScan(mScanCallback);
+    mBluetoothAdapter.startDiscovery();
   }
 
   private void stopScan() {
-    BluetoothLeScanner scanner = mBluetoothAdapter.getBluetoothLeScanner();
-    if (scanner != null) {
-      scanner.stopScan(mScanCallback);
-    }
+    mBluetoothAdapter.cancelDiscovery();
   }
 
   public void connect(final String mac) {
@@ -323,45 +305,49 @@ public class BluetoothPrintPlusPlugin
         if (portManager != null) {
           portManager.closePort();
           try {
-              Thread.sleep(500);
+            Thread.sleep(500);
           } catch (InterruptedException e) {
-              throw new RuntimeException(e);
+            throw new RuntimeException(e);
           }
         }
         if (mac != null) {
           PrinterDevices blueTooth = new PrinterDevices.Build()
-              .setContext(context)
-              .setConnMethod(ConnMethod.BLUETOOTH)
-              .setMacAddress(mac)
-              .setCommand(Command.CPCL)
-              .setCallbackListener(new CallbackListener() {
-                @Override
-                public void onConnecting() {
+                  .setContext(context)
+                  .setConnMethod(ConnMethod.BLUETOOTH)
+                  .setMacAddress(mac)
+                  .setCommand(Command.ESC)
+                  .setCallbackListener(new CallbackListener() {
+                    @Override
+                    public void onConnecting() { }
 
-                }
+                    @Override
+                    public void onCheckCommand() { }
 
-                @Override
-                public void onCheckCommand() { }
+                    @Override
+                    public void onSuccess(PrinterDevices printerDevices) {
+                      // LogUtils.d(TAG, "onSuccess");
+                      sink.success(BPPState.DeviceConnected.getValue());
+                    }
 
-                @Override
-                public void onSuccess(PrinterDevices printerDevices) { }
+                    @Override
+                    public void onReceive(byte[] data) {
+                      if (data == null) return;
+                      // LogUtils.d(TAG, "Received Data: " + Arrays.toString(data));
+                      new Handler(Looper.getMainLooper()).post(() -> {
+                        channel.invokeMethod("ReceivedData", data);
+                      });
+                    }
 
-                @Override
-                public void onReceive(byte[] data) {
-                  if (data == null) return;
-                  // LogUtils.d(TAG, "Received Data: " + Arrays.toString(data));
-                  new Handler(Looper.getMainLooper()).post(() -> {
-                    channel.invokeMethod("ReceivedData", data);
-                  });
-                }
+                    @Override
+                    public void onFailure() { }
 
-                @Override
-                public void onFailure() { }
-
-                @Override
-                public void onDisconnect() { }
-              })
-              .build();
+                    @Override
+                    public void onDisconnect() {
+                      // LogUtils.d(TAG, "onDisconnect");
+                      sink.success(BPPState.DeviceDisconnected.getValue());
+                    }
+                  })
+                  .build();
           Printer.connect(blueTooth);
         }
       }
@@ -391,15 +377,13 @@ public class BluetoothPrintPlusPlugin
   }
 
   private final StreamHandler stateHandler = new StreamHandler() {
-    private EventSink sink;
+    // private EventSink sink;
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
       @Override
       public void onReceive(Context context, Intent intent) {
         final String action = intent.getAction();
-        LogUtils.d(TAG, "stateStreamHandler, current action: " + action);
+        // LogUtils.d(TAG, "stateStreamHandler, current action: " + action);
         if (BluetoothAdapter.ACTION_STATE_CHANGED.equals(action)) {
-          threadPool = null;
-          // sink.success(intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, -1));
           int blueState = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, 0);
           switch (blueState) {
             case BluetoothAdapter.STATE_ON:
@@ -409,11 +393,6 @@ public class BluetoothPrintPlusPlugin
               sink.success(BPPState.BlueOff.getValue());
               break;
           }
-        } else if (BluetoothDevice.ACTION_ACL_CONNECTED.equals(action)) {
-          sink.success(BPPState.DeviceConnected.getValue());
-        } else if (BluetoothDevice.ACTION_ACL_DISCONNECTED.equals(action)) {
-          threadPool = null;
-          sink.success(BPPState.DeviceDisconnected.getValue());
         }
       }
     };
@@ -422,9 +401,6 @@ public class BluetoothPrintPlusPlugin
     public void onListen(Object o, EventSink eventSink) {
       sink = eventSink;
       IntentFilter filter = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
-      filter.addAction(BluetoothAdapter.ACTION_CONNECTION_STATE_CHANGED);
-      filter.addAction(BluetoothDevice.ACTION_ACL_CONNECTED);
-      filter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED);
       context.registerReceiver(mReceiver, filter);
     }
 

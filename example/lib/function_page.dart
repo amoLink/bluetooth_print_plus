@@ -45,18 +45,18 @@ class _FunctionPageState extends State<FunctionPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                ElevatedButton(
+                OutlinedButton(
                     onPressed: () async {
                       final cmd = await CommandTool.tscSelfTestCmd();
                       BluetoothPrintPlus.instance.write(cmd);
                     },
-                    child: const Text("selfTest")),
+                    child: Text("selfTest")),
               ],
             ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              ElevatedButton(
+              OutlinedButton(
                   onPressed: () async {
                     final ByteData bytes =
                         await rootBundle.load("assets/dithered-image.png");
@@ -73,15 +73,15 @@ class _FunctionPageState extends State<FunctionPage> {
                         cmd = await CommandTool.escImageCmd(image);
                         break;
                     }
-                    BluetoothPrintPlus.instance.write(cmd);
+                    await BluetoothPrintPlus.instance.write(cmd);
                   },
-                  child: const Text("image")),
+                  child: Text("image")),
             ],
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              ElevatedButton(
+              OutlinedButton(
                   onPressed: () async {
                     Uint8List? cmd;
                     switch (cmdType) {
@@ -95,11 +95,10 @@ class _FunctionPageState extends State<FunctionPage> {
                         cmd = await CommandTool.escTemplateCmd();
                         break;
                     }
-
-                    BluetoothPrintPlus.instance.write(cmd);
+                    await BluetoothPrintPlus.instance.write(cmd);
                     // print("getCommand $cmd");
                   },
-                  child: const Text("text/QR_code/barcode")),
+                  child: Text("text/QR_code/barcode")),
             ],
           )
         ],

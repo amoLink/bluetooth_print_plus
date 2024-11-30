@@ -52,7 +52,7 @@ Bluetooth Print Plus is a Bluetooth plugin used to print thermal printers in [Fl
 dependencies:
   flutter:
     sdk: flutter
-  bluetooth_print_plus: ^2.3.4
+  bluetooth_print_plus: ^2.4.0
 ```
 
 ### Add permissions for Bluetooth
@@ -83,17 +83,9 @@ In the **ios/Runner/Info.plist** let’s add:
 <string>Need BLE permission</string>
 <key>NSBluetoothPeripheralUsageDescription</key>
 <string>Need BLE permission</string>
-<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-<string>Need Location permission</string>
-<key>NSLocationAlwaysUsageDescription</key>
-<string>Need Location permission</string>
-<key>NSLocationWhenInUseUsageDescription</key>
-<string>Need Location permission</string>
 ```
 
-For location permissions on iOS see more at: [https://developer.apple.com/documentation/corelocation/requesting_authorization_for_location_services](https://developer.apple.com/documentation/corelocation/requesting_authorization_for_location_services)
-
-### init a BluetoothPrint instance
+### init BluetoothPrintPlus instance
 
 ```dart
 import 'package:bluetooth_print_plus/bluetooth_print_plus.dart';
@@ -101,27 +93,29 @@ import 'package:bluetooth_print_plus/bluetooth_print_plus.dart';
 final _bluetoothPrintPlus = BluetoothPrintPlus.instance;
 ```
 
+### BluetoothPrintPlus useful property
+
+```dart
+_bluetoothPrintPlus.isBlueOn;
+_bluetoothPrintPlus.isScanning;
+_bluetoothPrintPlus.isConnected;
+```
+
 ### listen
 
 - **state**
 
 ```dart
-_bluetoothPrintPlus.state.listen((state) {
-  print('********** state change: $state **********');
-  switch(state) {
-    case BPPState.blueOn:
-      /// blueOn, do something
-      break;
-    case BPPState.blueOff:
-      /// blueOff, do something
-      break;
-    case BPPState.deviceConnected:
-      /// deviceConnected, do something
-      break;
-    case BPPState.deviceDisconnected:
-      /// deviceDisconnected, do something
-      break;
-  }
+/// listen blue state
+_bluetoothPrintPlus.blueState.listen((event) {
+  print('********** blueState change: $event **********');
+  /// blue state changed, do something...
+});
+
+/// listen connect state
+_bluetoothPrintPlus.connectState.listen((event) {
+  print('********** connectState change: $event **********');
+  /// connect state changed, do something...
 });
 ```
 
@@ -138,7 +132,7 @@ _bluetoothPrintPlus.receivedData.listen((data) {
 
 ```dart
 // begin scan
-_bluetoothPrintPlus.startScan(timeout: const Duration(seconds: 30));
+_bluetoothPrintPlus.startScan(timeout: const Duration(seconds: 8));
 
 // get devices
 StreamBuilder<List<BluetoothDevice>>(
@@ -177,11 +171,29 @@ await  BluetoothPrintPlus.instance.disconnect();
 final ByteData bytes = await rootBundle.load("assets/dithered-image.png");
 final Uint8List image = bytes.buffer.asUint8List();
 await tscCommand.cleanCommand();
-await tscCommand.cls();
 await tscCommand.size(width: 76, height: 130);
+await tscCommand.cls(); // most after size
 await tscCommand.image(image: image, x: 50, y: 60);
 await tscCommand.print(1);
 final cmd = await tscCommand.getCommand();
+if (cmd == null) return;
+BluetoothPrintPlus.instance.write(cmd);
+
+/// for example: write cpcl command
+await cpclCommand.cleanCommand();
+await cpclCommand.size(width: 76 * 8, height: 76 * 8);
+await cpclCommand.image(image: image, x: 10, y: 10);
+await cpclCommand.print();
+final cmd = await cpclCommand.getCommand();
+if (cmd == null) return;
+BluetoothPrintPlus.instance.write(cmd);
+
+/// for example: write esc command
+await escCommand.cleanCommand();
+await escCommand.print();
+await escCommand.image(image: image);
+await escCommand.print();
+final cmd = await escCommand.getCommand();
 if (cmd == null) return;
 BluetoothPrintPlus.instance.write(cmd);
 ```

@@ -1,5 +1,7 @@
 /// BlueState
-enum BPPState { blueOn, blueOff, deviceConnected, deviceDisconnected }
+enum BlueState { blueOn, blueOff }
+
+enum ConnectState { connected, disconnected }
 
 /// Rotation
 enum Rotation { r_0, r_90, r_180, r_270 }

@@ -19,8 +19,8 @@ class CommandTool {
   /// tscImageCmd
   static Future<Uint8List?> tscImageCmd(Uint8List image) async {
     await tscCommand.cleanCommand();
-    await tscCommand.cls();
     await tscCommand.size(width: 76, height: 130);
+    await tscCommand.cls(); // most after size
     await tscCommand.image(image: image, x: 50, y: 60);
     await tscCommand.print(1);
     final cmd = await tscCommand.getCommand();
@@ -31,7 +31,7 @@ class CommandTool {
   static Future<Uint8List?> tscTemplateCmd() async {
     await tscCommand.cleanCommand();
     await tscCommand.size(width: 76, height: 130);
-    await tscCommand.cls();
+    await tscCommand.cls(); // most after size
     await tscCommand.speed(8);
     await tscCommand.density(8);
     await tscCommand.text(

@@ -9,61 +9,69 @@ class BluetoothPrintPlus {
     _channel.setMethodCallHandler((MethodCall call) async {
       _methodStreamController.add(call);
     });
+    _state.listen((event) {});
   }
-
   static final BluetoothPrintPlus _instance = BluetoothPrintPlus._();
-
   static BluetoothPrintPlus get instance => _instance;
-
   static const MethodChannel _channel =
       MethodChannel("bluetooth_print_plus/methods");
   static const EventChannel _stateChannel =
       EventChannel('bluetooth_print_plus/state');
-
-  Stream<MethodCall> get _methodStream => _methodStreamController.stream;
   final StreamController<MethodCall> _methodStreamController =
       StreamController.broadcast();
-
-  static final _isScanning = StreamControllerReEmit<bool>(initialValue: false);
-
-  Stream<bool> get isScanning => _isScanning.stream;
-
-  bool get isScanningNow => _isScanning.latestValue;
-
   static final _scanResults =
       StreamControllerReEmit<List<BluetoothDevice>>(initialValue: []);
-
-  Stream<List<BluetoothDevice>> get scanResults => _scanResults.stream;
-
+  static final _isScanning = StreamControllerReEmit<bool>(initialValue: false);
+  static final _connectState = StreamControllerReEmit<ConnectState>(
+      initialValue: ConnectState.disconnected);
+  static final _blueState =
+      StreamControllerReEmit<BlueState>(initialValue: BlueState.blueOn);
   static Timer? _scanTimeout;
 
-  /// Gets the current state of the Bluetooth module
-  Stream<BPPState> get state async* {
-    yield await _channel.invokeMethod('state').then((s) {
-      if (s == 0) {
-        return BPPState.blueOn;
-      } else if (s == 1) {
-        return BPPState.blueOff;
-      } else if (s == 2) {
-        return BPPState.deviceConnected;
-      } else if (s == 3) {
-        return BPPState.deviceDisconnected;
-      }
-      return BPPState.deviceDisconnected;
-    });
+  Stream<MethodCall> get _methodStream => _methodStreamController.stream;
+  Stream<List<BluetoothDevice>> get scanResults => _scanResults.stream;
+  Stream<bool> get isScanning => _isScanning.stream;
+  Stream<ConnectState> get connectState => _connectState.stream;
+  Stream<BlueState> get blueState => _blueState.stream;
+  bool get isScanningNow => _isScanning.latestValue;
+  bool get isConnected => _connectState.latestValue == ConnectState.connected;
+  bool get isBlueOn => _blueState.latestValue == BlueState.blueOn;
 
-    yield* _stateChannel.receiveBroadcastStream().map((s) {
-      if (s == 0) {
-        return BPPState.blueOn;
-      } else if (s == 1) {
-        return BPPState.blueOff;
-      } else if (s == 2) {
-        return BPPState.deviceConnected;
-      } else if (s == 3) {
-        return BPPState.deviceDisconnected;
-      }
-      return BPPState.deviceDisconnected;
-    });
+  /// start scan for Bluetooth devices
+  Future startScan({
+    Duration? timeout,
+  }) async {
+    if (isScanningNow) {
+      await stopScan();
+    }
+    await _scan(timeout: timeout).drain();
+    return _scanResults.value;
+  }
+
+  /// stop scan for Bluetooth devices
+  Future stopScan() async {
+    if (isScanningNow) {
+      await _channel.invokeMethod('stopScan');
+      _isScanning.add(false);
+      _scanTimeout?.cancel();
+    } else {
+      print("stopScan: already stopped");
+    }
+  }
+
+  /// connect Bluetooth device
+  Future<dynamic> connect(BluetoothDevice device) async {
+    await _channel.invokeMethod('connect', device.toJson());
+  }
+
+  /// disconnect Bluetooth device
+  Future<dynamic> disconnect() async {
+    await _channel.invokeMethod('disconnect');
+  }
+
+  /// write data to Bluetooth device
+  Future<dynamic> write(Uint8List? data) async {
+    await _channel.invokeMethod('write', {"data": data});
   }
 
   /// peripheral data feedback, receive and listen;
@@ -75,9 +83,46 @@ class BluetoothPrintPlus {
     });
   }
 
-  /// Starts a scan for Bluetooth Low Energy devices
+  /// Gets the current state of the Bluetooth module
+  Stream<int> get _state async* {
+    yield await _channel.invokeMethod('state').then((s) {
+      if (s <= 1) {
+        if (s == 0) {
+          _blueState.add(BlueState.blueOn);
+        } else if (s == 1) {
+          _blueState.add(BlueState.blueOff);
+        }
+      } else {
+        if (s == 2) {
+          _connectState.add(ConnectState.connected);
+        } else if (s == 3) {
+          _connectState.add(ConnectState.disconnected);
+        }
+      }
+      return 1;
+    });
+
+    yield* _stateChannel.receiveBroadcastStream().map((s) {
+      if (s <= 1) {
+        if (s == 0) {
+          _blueState.add(BlueState.blueOn);
+        } else if (s == 1) {
+          _blueState.add(BlueState.blueOff);
+        }
+      } else {
+        if (s == 2) {
+          _connectState.add(ConnectState.connected);
+        } else if (s == 3) {
+          _connectState.add(ConnectState.disconnected);
+        }
+      }
+      return 1;
+    });
+  }
+
+  /// Starts a scan for Bluetooth devices
   /// Timeout closes the stream after a specified [Duration]
-  Stream<BluetoothDevice> scan({Duration? timeout}) async* {
+  Stream<BluetoothDevice> _scan({Duration? timeout}) async* {
     // Emit to isScanning
     _isScanning.add(true);
     // Clear scan results list
@@ -111,32 +156,5 @@ class BluetoothPrintPlus {
       _scanResults.add(list);
       return device;
     });
-  }
-
-  Future startScan({
-    Duration? timeout,
-  }) async {
-    await scan(timeout: timeout).drain();
-    return _scanResults.value;
-  }
-
-  /// Stops a scan for Bluetooth Low Energy devices
-  Future stopScan() async {
-    if (isScanningNow) {
-      await _channel.invokeMethod('stopScan');
-      _isScanning.add(false);
-      _scanTimeout?.cancel();
-    } else {
-      print("stopScan: already stopped");
-    }
-  }
-
-  Future<dynamic> connect(BluetoothDevice device) =>
-      _channel.invokeMethod('connect', device.toJson());
-
-  Future<dynamic> disconnect() => _channel.invokeMethod('disconnect');
-
-  Future<dynamic> write(Uint8List? data) async {
-    await _channel.invokeMethod('write', {"data": data});
   }
 }
