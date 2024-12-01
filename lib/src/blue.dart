@@ -88,7 +88,7 @@ class BluetoothPrintPlus {
   /// Disconnects from the currently connected Bluetooth device.
   ///
   /// If no device is connected, the method does nothing.
-  /// 
+  ///
   /// The `connectState` stream is emitted with `disconnected` after a successful disconnection.
   ///
   /// Returns a `Future` that completes when the disconnection process is finished.
@@ -153,7 +153,6 @@ class BluetoothPrintPlus {
       return 1;
     });
   }
-
 
   /// Scans for nearby Bluetooth devices and emits them as a stream.
   ///
