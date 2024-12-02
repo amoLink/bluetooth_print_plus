@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'dart:async';
 
@@ -32,15 +30,30 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
-  final _bluetoothPrintPlus = BluetoothPrintPlus.instance;
+  final _bluetoothPrintPlus = BluetoothPrintPlus();
   BluetoothDevice? _device;
 
   @override
+
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) => initBluetooth());
   }
 
+  @override
+
+  void dispose() {
+    super.dispose();
+    _bluetoothPrintPlus.dispose();
+  }
+
+  /// Initializes the BluetoothPrintPlus instance by setting up listeners 
+  /// for various Bluetooth-related events. It listens to the scanning 
+  /// status, Bluetooth state changes, connection state changes, and 
+  /// received data. Based on these events, it updates the UI state 
+  /// accordingly and navigates to the FunctionPage when a device is 
+  /// successfully connected. It also handles disconnection by resetting 
+  /// the device state.
   Future<void> initBluetooth() async {
     /// listen isScanning
     _bluetoothPrintPlus.isScanning.listen((event) {
@@ -68,7 +81,10 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => FunctionPage(_device!)));
+                    builder: (context) => FunctionPage(
+                          _device!,
+                          instance: _bluetoothPrintPlus,
+                        )));
           });
           break;
         case ConnectState.disconnected:
@@ -175,6 +191,20 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     }
   }
 
+  /// Start a scan for Bluetooth devices and emit them as a stream on
+  /// `scanResults` stream.
+  ///
+  /// If a scan is already in progress, it is stopped first.
+  ///
+  /// The scan results are emitted on the `scanResults` stream. The stream
+  /// will also emit a list of all discovered devices via the `scanResults`
+  /// stream.
+  ///
+  /// Note that the scan results are not guaranteed to be in any particular
+  /// order.
+  ///
+  /// If the scan fails (for example, if the device does not have Bluetooth
+  /// capabilities), the stream will emit an error and then close.
   Future onScanPressed() async {
     try {
       await _bluetoothPrintPlus.startScan(timeout: Duration(seconds: 10));
@@ -183,6 +213,11 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     }
   }
 
+  /// Stop a scan for Bluetooth devices if a scan is in progress.
+  ///
+  /// If no scan is in progress, nothing happens.
+  ///
+  /// The `isScanning` stream is emitted with `false` when the scan is stopped.
   Future onStopPressed() async {
     try {
       _bluetoothPrintPlus.stopScan();
