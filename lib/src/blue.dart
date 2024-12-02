@@ -37,7 +37,15 @@ class BluetoothPrintPlus {
   bool get isConnected => _connectState.latestValue == ConnectState.connected;
   bool get isBlueOn => _blueState.latestValue == BlueState.blueOn;
 
-  /// start scan for Bluetooth devices
+  /// Start a scan for Bluetooth devices.
+  ///
+  /// If a scan is already in progress, it is stopped first.
+  ///
+  /// The scan results are emitted on the `scanResults` stream.
+  ///
+  /// The `timeout` parameter stops the scan after the specified duration.
+  ///
+  /// Returns the list of scanned devices.
   Future startScan({
     Duration? timeout,
   }) async {
@@ -48,7 +56,11 @@ class BluetoothPrintPlus {
     return _scanResults.value;
   }
 
-  /// stop scan for Bluetooth devices
+  /// Stop a scan for Bluetooth devices.
+  ///
+  /// If no scan is in progress, nothing happens.
+  ///
+  /// The `isScanning` stream is emitted with `false` when the scan is stopped.
   Future stopScan() async {
     if (isScanningNow) {
       await _channel.invokeMethod('stopScan');
@@ -59,17 +71,39 @@ class BluetoothPrintPlus {
     }
   }
 
-  /// connect Bluetooth device
+  /// Connect to a Bluetooth device.
+  ///
+  /// The device must have been previously discovered in a scan.
+  ///
+  /// The `connectState` stream is emitted with `connecting` while the
+  /// connection is in progress, and `connected` if the connection is
+  /// successful, or `disconnected` if the connection fails.
+  ///
+  /// The `connect` method returns immediately, and the connection status
+  /// is reported on the `connectState` stream.
   Future<dynamic> connect(BluetoothDevice device) async {
     await _channel.invokeMethod('connect', device.toJson());
   }
 
-  /// disconnect Bluetooth device
+  /// Disconnects from the currently connected Bluetooth device.
+  ///
+  /// If no device is connected, the method does nothing.
+  ///
+  /// The `connectState` stream is emitted with `disconnected` after a successful disconnection.
+  ///
+  /// Returns a `Future` that completes when the disconnection process is finished.
   Future<dynamic> disconnect() async {
     await _channel.invokeMethod('disconnect');
   }
 
-  /// write data to Bluetooth device
+  /// Sends data to the connected Bluetooth device.
+  ///
+  /// The data to be sent should be provided as a `Uint8List`.
+  ///
+  /// This method uses a method channel to invoke the native 'write' method,
+  /// passing the data as an argument.
+  ///
+  /// Returns a `Future` that completes when the write operation is finished.
   Future<dynamic> write(Uint8List? data) async {
     await _channel.invokeMethod('write', {"data": data});
   }
@@ -120,8 +154,20 @@ class BluetoothPrintPlus {
     });
   }
 
-  /// Starts a scan for Bluetooth devices
-  /// Timeout closes the stream after a specified [Duration]
+  /// Scans for nearby Bluetooth devices and emits them as a stream.
+  ///
+  /// If a `timeout` is provided, the scan will automatically stop after that
+  /// duration. Otherwise, the scan will run indefinitely until `stopScan` is
+  /// called.
+  ///
+  /// The stream will emit each discovered device as a [BluetoothDevice] object.
+  /// The stream will also emit a list of all discovered devices via the
+  /// `scanResults` stream.
+  ///
+  /// Note that the scan results are not guaranteed to be in any particular order.
+  ///
+  /// If the scan fails (for example, if the device does not have Bluetooth
+  /// capabilities), the stream will emit an error and then close.
   Stream<BluetoothDevice> _scan({Duration? timeout}) async* {
     // Emit to isScanning
     _isScanning.add(true);
