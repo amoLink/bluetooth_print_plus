@@ -7,8 +7,9 @@ enum CmdType { Tsc, Cpcl, Esc }
 
 class FunctionPage extends StatefulWidget {
   final BluetoothDevice device;
+  final BluetoothPrintPlus instance;
 
-  const FunctionPage(this.device, {super.key});
+  const FunctionPage(this.device, {super.key, required this.instance});
 
   @override
   State<FunctionPage> createState() => _FunctionPageState();
@@ -24,8 +25,9 @@ class _FunctionPageState extends State<FunctionPage> {
     _disconnect();
   }
 
+  /// Disconnects from the currently connected device.
   void _disconnect() async {
-    await BluetoothPrintPlus.instance.disconnect();
+    await widget.instance.disconnect();
   }
 
   @override
@@ -33,7 +35,7 @@ class _FunctionPageState extends State<FunctionPage> {
     // TODO: implement build
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.device.name ?? ""),
+        title: Text(widget.device.name),
       ),
       body: Column(
         children: [
@@ -48,7 +50,7 @@ class _FunctionPageState extends State<FunctionPage> {
                 OutlinedButton(
                     onPressed: () async {
                       final cmd = await CommandTool.tscSelfTestCmd();
-                      BluetoothPrintPlus.instance.write(cmd);
+                      widget.instance.write(cmd);
                     },
                     child: Text("selfTest")),
               ],
@@ -73,7 +75,7 @@ class _FunctionPageState extends State<FunctionPage> {
                         cmd = await CommandTool.escImageCmd(image);
                         break;
                     }
-                    await BluetoothPrintPlus.instance.write(cmd);
+                    await widget.instance.write(cmd);
                   },
                   child: Text("image")),
             ],
@@ -95,7 +97,7 @@ class _FunctionPageState extends State<FunctionPage> {
                         cmd = await CommandTool.escTemplateCmd();
                         break;
                     }
-                    await BluetoothPrintPlus.instance.write(cmd);
+                    await widget.instance.write(cmd);
                     // print("getCommand $cmd");
                   },
                   child: Text("text/QR_code/barcode")),

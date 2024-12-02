@@ -5,28 +5,24 @@ import 'package:flutter/services.dart';
 import '../bluetooth_print_plus.dart';
 
 class BluetoothPrintPlus {
-  BluetoothPrintPlus._() {
+  BluetoothPrintPlus() {
     _channel.setMethodCallHandler((MethodCall call) async {
       _methodStreamController.add(call);
     });
     _state.listen((event) {});
   }
-  static final BluetoothPrintPlus _instance = BluetoothPrintPlus._();
-  static BluetoothPrintPlus get instance => _instance;
-  static const MethodChannel _channel =
-      MethodChannel("bluetooth_print_plus/methods");
-  static const EventChannel _stateChannel =
-      EventChannel('bluetooth_print_plus/state');
+  MethodChannel _channel = MethodChannel("bluetooth_print_plus/methods");
+  EventChannel _stateChannel = EventChannel('bluetooth_print_plus/state');
   final StreamController<MethodCall> _methodStreamController =
       StreamController.broadcast();
-  static final _scanResults =
+  final _scanResults =
       StreamControllerReEmit<List<BluetoothDevice>>(initialValue: []);
-  static final _isScanning = StreamControllerReEmit<bool>(initialValue: false);
-  static final _connectState = StreamControllerReEmit<ConnectState>(
+  final _isScanning = StreamControllerReEmit<bool>(initialValue: false);
+  final _connectState = StreamControllerReEmit<ConnectState>(
       initialValue: ConnectState.disconnected);
-  static final _blueState =
+  final _blueState =
       StreamControllerReEmit<BlueState>(initialValue: BlueState.blueOn);
-  static Timer? _scanTimeout;
+  Timer? _scanTimeout;
 
   Stream<MethodCall> get _methodStream => _methodStreamController.stream;
   Stream<List<BluetoothDevice>> get scanResults => _scanResults.stream;
@@ -36,6 +32,26 @@ class BluetoothPrintPlus {
   bool get isScanningNow => _isScanning.latestValue;
   bool get isConnected => _connectState.latestValue == ConnectState.connected;
   bool get isBlueOn => _blueState.latestValue == BlueState.blueOn;
+
+  ///
+  /// Closes all streams and cancels the scan timeout. Disconnects the device.
+  ///
+  /// This is called automatically when the [BluetoothPrintPlus] object is
+  /// garbage collected, but it may be called manually to free up resources
+  /// earlier. This is useful in environments where memory is limited and
+  /// objects are not garbage collected frequently enough.
+  ///
+  void dispose() {
+    _methodStreamController.close();
+    _isScanning.close();
+    _scanResults.close();
+    _connectState.close();
+    _blueState.close();
+    if (_scanTimeout is Timer) {
+      _scanTimeout?.cancel();
+    }
+    disconnect();
+  }
 
   /// Start a scan for Bluetooth devices.
   ///
@@ -110,9 +126,7 @@ class BluetoothPrintPlus {
 
   /// peripheral data feedback, receive and listen;
   Stream<Uint8List> get receivedData async* {
-    yield* BluetoothPrintPlus.instance._methodStream
-        .where((m) => m.method == "ReceivedData")
-        .map((m) {
+    yield* _methodStream.where((m) => m.method == "ReceivedData").map((m) {
       return m.arguments;
     });
   }
@@ -181,7 +195,7 @@ class BluetoothPrintPlus {
       _scanTimeout = Timer(timeout, stopScan);
     }
 
-    yield* BluetoothPrintPlus.instance._methodStream
+    yield* _methodStream
         .where((m) => m.method == "ScanResult")
         .map((m) => m.arguments)
         .map((map) {

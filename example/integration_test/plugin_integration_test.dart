@@ -15,7 +15,7 @@ void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   testWidgets('getPlatformVersion test', (WidgetTester tester) async {
-    final BluetoothPrintPlus plugin = BluetoothPrintPlus.instance;
+    final BluetoothPrintPlus plugin = BluetoothPrintPlus();
     // The version string depends on the host platform running the test, so
     // just assert that some non-empty string is returned.
   });
