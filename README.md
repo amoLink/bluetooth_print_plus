@@ -52,7 +52,7 @@ Bluetooth Print Plus is a Bluetooth plugin used to print thermal printers in [Fl
 dependencies:
   flutter:
     sdk: flutter
-  bluetooth_print_plus: ^2.4.0
+  bluetooth_print_plus: ^2.4.1
 ```
 
 ### Add permissions for Bluetooth
@@ -85,35 +85,65 @@ In the **ios/Runner/Info.plist** let’s add:
 <string>Need BLE permission</string>
 ```
 
-### init BluetoothPrintPlus instance
+### import
 
 ```dart
 import 'package:bluetooth_print_plus/bluetooth_print_plus.dart';
-
-final _bluetoothPrintPlus = BluetoothPrintPlus.instance;
 ```
 
 ### BluetoothPrintPlus useful property
 
 ```dart
-_bluetoothPrintPlus.isBlueOn;
-_bluetoothPrintPlus.isScanning;
-_bluetoothPrintPlus.isConnected;
+BluetoothPrintPlus.isBlueOn;
+BluetoothPrintPlus.isScanning;
+BluetoothPrintPlus.isConnected;
 ```
 
 ### listen
 
+---
+
+```dart
+late StreamSubscription<bool> _isScanningSubscription;
+late StreamSubscription<BlueState> _blueStateSubscription;
+late StreamSubscription<ConnectState> _connectStateSubscription;
+late StreamSubscription<Uint8List> _receivedDataSubscription;
+late StreamSubscription<List<BluetoothDevice>> _scanResultsSubscription;
+late List<BluetoothDevice> _scanResults;
+```
+
+- **scan results**
+
+```dart
+/// listen scanResults
+_scanResultsSubscription = BluetoothPrintPlus.scanResults.listen((event) {
+  if (mounted) {
+    setState(() {
+      _scanResults = event;
+    });
+  }
+});
+```
+
 - **state**
 
 ```dart
+/// listen isScanning
+_isScanningSubscription = BluetoothPrintPlus.isScanning.listen((event) {
+  print('********** isScanning: $event **********');
+  if (mounted) {
+    setState(() {});
+  }
+});
+
 /// listen blue state
-_bluetoothPrintPlus.blueState.listen((event) {
+_blueStateSubscription = BluetoothPrintPlus.blueState.listen((event) {
   print('********** blueState change: $event **********');
   /// blue state changed, do something...
 });
 
 /// listen connect state
-_bluetoothPrintPlus.connectState.listen((event) {
+_blueStateSubscription = _BluetoothPrintPlus.connectState.listen((event) {
   print('********** connectState change: $event **********');
   /// connect state changed, do something...
 });
@@ -122,7 +152,7 @@ _bluetoothPrintPlus.connectState.listen((event) {
 - **received Data**
 
 ```dart
-_bluetoothPrintPlus.receivedData.listen((data) {
+_BluetoothPrintPlus.receivedData.listen((data) {
   print('********** received data: $data **********');
   /// received data, do something...
 });
@@ -130,45 +160,46 @@ _bluetoothPrintPlus.receivedData.listen((data) {
 
 ### scan
 
+---
+
 ```dart
 // begin scan
-_bluetoothPrintPlus.startScan(timeout: const Duration(seconds: 8));
+await BluetoothPrintPlus.startScan(timeout: Duration(seconds: 10));
 
 // get devices
-StreamBuilder<List<BluetoothDevice>>(
-  stream: _bluetoothPrintPlus.scanResults,
-  initialData: [],
-  builder: (c, snapshot) => ListView(
-    children: snapshot.data!.map((d) => Container(
-      padding: const EdgeInsets.only(left: 10, right: 10, bottom: 5),
-      child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [ .... ],
-          ),
-    )).toList(),
-  ),
-)
+_scanResultsSubscription = BluetoothPrintPlus.scanResults.listen((event) {
+  if (mounted) {
+    setState(() {
+      _scanResults = event;
+    });
+  }
+});
 ```
 
 ### connect
 
+---
+
 ```dart
-await _bluetoothPrintPlus.connect(_device);
+await BluetoothPrintPlus.connect(_device);
 ```
 
 ### disconnect
 
+---
+
 ```dart
-await _bluetoothPrintPlus.disconnect();
-or
-await  BluetoothPrintPlus.instance.disconnect();
+await BluetoothPrintPlus.disconnect();
 ```
 
 ### print/write
 
+---
+
 ```dart
-/// for example: write tsc command
 final ByteData bytes = await rootBundle.load("assets/dithered-image.png");
+
+/// write tsc command, for example:
 final Uint8List image = bytes.buffer.asUint8List();
 await tscCommand.cleanCommand();
 await tscCommand.size(width: 76, height: 130);
@@ -177,25 +208,41 @@ await tscCommand.image(image: image, x: 50, y: 60);
 await tscCommand.print(1);
 final cmd = await tscCommand.getCommand();
 if (cmd == null) return;
-BluetoothPrintPlus.instance.write(cmd);
+BluetoothPrintPlus.write(cmd);
 
-/// for example: write cpcl command
+/// write cpcl command, for example:
 await cpclCommand.cleanCommand();
 await cpclCommand.size(width: 76 * 8, height: 76 * 8);
 await cpclCommand.image(image: image, x: 10, y: 10);
 await cpclCommand.print();
 final cmd = await cpclCommand.getCommand();
 if (cmd == null) return;
-BluetoothPrintPlus.instance.write(cmd);
+BluetoothPrintPlus.write(cmd);
 
-/// for example: write esc command
+/// write esc command, for example:
 await escCommand.cleanCommand();
 await escCommand.print();
 await escCommand.image(image: image);
 await escCommand.print();
 final cmd = await escCommand.getCommand();
 if (cmd == null) return;
-BluetoothPrintPlus.instance.write(cmd);
+BluetoothPrintPlus.write(cmd);
+```
+
+### Cancel Subscription
+
+```dart
+@override
+void dispose() {
+  super.dispose();
+  _isScanningSubscription.cancel();
+  _blueStateSubscription.cancel();
+  _connectStateSubscription.cancel();
+  _receivedDataSubscription.cancel();
+  _scanResultsSubscription.cancel();
+  _scanResults.clear();
+  _device = null;
+}
 ```
 
 ## Troubleshooting

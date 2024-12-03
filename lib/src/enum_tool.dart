@@ -1,6 +1,7 @@
 /// BlueState
 enum BlueState { blueOn, blueOff }
 
+/// ConnectState
 enum ConnectState { connected, disconnected }
 
 /// Rotation

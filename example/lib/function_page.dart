@@ -25,7 +25,7 @@ class _FunctionPageState extends State<FunctionPage> {
   }
 
   void _disconnect() async {
-    await BluetoothPrintPlus.instance.disconnect();
+    await BluetoothPrintPlus.disconnect();
   }
 
   @override
@@ -48,7 +48,7 @@ class _FunctionPageState extends State<FunctionPage> {
                 OutlinedButton(
                     onPressed: () async {
                       final cmd = await CommandTool.tscSelfTestCmd();
-                      BluetoothPrintPlus.instance.write(cmd);
+                      BluetoothPrintPlus.write(cmd);
                     },
                     child: Text("selfTest")),
               ],
@@ -73,7 +73,7 @@ class _FunctionPageState extends State<FunctionPage> {
                         cmd = await CommandTool.escImageCmd(image);
                         break;
                     }
-                    await BluetoothPrintPlus.instance.write(cmd);
+                    await BluetoothPrintPlus.write(cmd);
                   },
                   child: Text("image")),
             ],
@@ -95,7 +95,7 @@ class _FunctionPageState extends State<FunctionPage> {
                         cmd = await CommandTool.escTemplateCmd();
                         break;
                     }
-                    await BluetoothPrintPlus.instance.write(cmd);
+                    await BluetoothPrintPlus.write(cmd);
                     // print("getCommand $cmd");
                   },
                   child: Text("text/QR_code/barcode")),
