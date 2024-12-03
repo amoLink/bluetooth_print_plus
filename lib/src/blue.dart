@@ -19,23 +19,29 @@ class BluetoothPrintPlus {
   }
 
   /// native platform methods channel
-  static final MethodChannel _methodChannel = const MethodChannel("bluetooth_print_plus/methods");
+  static final MethodChannel _methodChannel =
+      const MethodChannel("bluetooth_print_plus/methods");
 
   /// native platform events channel
-  static final EventChannel _stateChannel = const EventChannel('bluetooth_print_plus/state');
-  static final StreamController<MethodCall> _methodStream = StreamController.broadcast();
+  static final EventChannel _stateChannel =
+      const EventChannel('bluetooth_print_plus/state');
+  static final StreamController<MethodCall> _methodStream =
+      StreamController.broadcast();
 
   /// stream used for the scanResults public api
-  static final _scanResults = StreamControllerReEmit<List<BluetoothDevice>>(initialValue: []);
+  static final _scanResults =
+      StreamControllerReEmit<List<BluetoothDevice>>(initialValue: []);
 
   /// stream used for the isScanning public api
   static final _isScanning = StreamControllerReEmit<bool>(initialValue: false);
 
   /// stream used for the isConnected public api
-  static final _connectState = StreamControllerReEmit<ConnectState>(initialValue: ConnectState.disconnected);
+  static final _connectState = StreamControllerReEmit<ConnectState>(
+      initialValue: ConnectState.disconnected);
 
   /// stream used for the isBlueOn public api
-  static final _blueState = StreamControllerReEmit<BlueState>(initialValue: BlueState.blueOn);
+  static final _blueState =
+      StreamControllerReEmit<BlueState>(initialValue: BlueState.blueOn);
 
   /// timeout for scanning that can be cancelled by stopScan
   static Timer? _scanTimeout;
@@ -59,16 +65,14 @@ class BluetoothPrintPlus {
   static bool get isScanningNow => _isScanning.latestValue;
 
   /// blue device is connected now?
-  static bool get isConnected => _connectState.latestValue == ConnectState.connected;
+  static bool get isConnected =>
+      _connectState.latestValue == ConnectState.connected;
 
   /// blue is on now?
   static bool get isBlueOn => _blueState.latestValue == BlueState.blueOn;
 
   /// the last known state
   static int? _stateNow;
-
-  /// the subscription to the merged scan results stream
-  static StreamSubscription<BluetoothDevice?>? _scanSubscription;
 
   /// Start a scan for Bluetooth devices.
   ///

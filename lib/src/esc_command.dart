@@ -23,17 +23,17 @@ class EscCommand {
 
   /// Sends a text command to the printer with specified parameters.
   ///
-  /// This method allows you to print text on the printer with various styles 
-  /// and alignments. You can specify the content of the text, its alignment, 
-  /// style, and font size. The method communicates with the printer through 
+  /// This method allows you to print text on the printer with various styles
+  /// and alignments. You can specify the content of the text, its alignment,
+  /// style, and font size. The method communicates with the printer through
   /// a method channel.
   ///
   /// - Parameters:
   ///   - content: The text content to be printed.
   ///   - alignment: The alignment of the text. Defaults to [Alignment.left].
-  ///   - style: The style of the text. Can be normal, bold, underline, or 
+  ///   - style: The style of the text. Can be normal, bold, underline, or
   ///     both bold and underline. Defaults to [EscTextStyle.default_].
-  ///   - fontSize: The font size of the text. Options range from default 
+  ///   - fontSize: The font size of the text. Options range from default
   ///     to size 7. Defaults to [EscFontSize.default_].
   ///
   /// - Returns: A [Future] that completes when the command has been sent.
@@ -95,14 +95,14 @@ class EscCommand {
   ///
   /// This method allows you to print a QR code on the printer with various
   /// alignments and sizes. You can specify the content of the QR code, its
-  /// alignment, and its size. The method communicates with the printer 
+  /// alignment, and its size. The method communicates with the printer
   /// through a method channel.
   ///
   /// - Parameters:
   ///   - content: The content to be encoded in the QR code.
-  ///   - size: The size of the QR code. Valid range is from 1 to 16. 
+  ///   - size: The size of the QR code. Valid range is from 1 to 16.
   ///     Defaults to 3.
-  ///   - alignment: The alignment of the QR code on the printout. 
+  ///   - alignment: The alignment of the QR code on the printout.
   ///     Defaults to [Alignment.left].
   ///
   /// - Returns: A [Future] that completes when the command has been sent.
@@ -122,7 +122,6 @@ class EscCommand {
     await methodChannel.invokeMethod<void>('qrCode', params);
   }
 
-  
   /// Sends an image command to the printer with specified parameters.
   ///
   /// This method allows you to print an image on the printer with various
