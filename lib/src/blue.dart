@@ -92,7 +92,11 @@ class BluetoothPrintPlus {
     if (isScanningNow) {
       await stopScan();
     }
-    await _scan(timeout: timeout).drain();
+    _scan(timeout: timeout).listen((device) {});
+    if (timeout != null) {
+      await Future.delayed(timeout);
+      await stopScan();
+    }
     return _scanResults.value;
   }
 
