@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/services.dart';
+import 'package:rxdart/rxdart.dart';
 
 import '../bluetooth_print_plus.dart';
 
@@ -43,8 +44,7 @@ class BluetoothPrintPlus {
   static final _blueState =
       StreamControllerReEmit<BlueState>(initialValue: BlueState.blueOn);
 
-  /// timeout for scanning that can be cancelled by stopScan
-  static Timer? _scanTimeout;
+  static PublishSubject _stopScanPill = new PublishSubject();
 
   /// a stream of scan results
   /// - if you re-listen to the stream it re-emits the previous results
@@ -76,7 +76,7 @@ class BluetoothPrintPlus {
 
   /// Start a scan for Bluetooth devices.
   ///
-  /// [timeout] calls stopScan after a specified duration
+  /// [timeout] calls stopScan after a specified duration, Defaults to 15 seconds.
   ///
   /// If a scan is already in progress, it is stopped first.
   ///
@@ -86,7 +86,7 @@ class BluetoothPrintPlus {
   ///
   /// Returns the list of scanned devices.
   static Future startScan({
-    Duration? timeout,
+    Duration timeout = const Duration(seconds: 15),
   }) async {
     _initFlutterBluePlus();
     if (isScanningNow) {
@@ -104,7 +104,7 @@ class BluetoothPrintPlus {
   static Future stopScan() async {
     if (isScanningNow) {
       _isScanning.add(false);
-      _scanTimeout?.cancel();
+      _stopScanPill.add(null);
       await _methodChannel.invokeMethod('stopScan');
     } else {
       print("stopScan: already stopped");
@@ -113,7 +113,7 @@ class BluetoothPrintPlus {
 
   /// Connect to a Bluetooth device.
   ///
-  /// The device must have been previously discovered in a scan.
+  /// [device] The device must have been previously discovered in a scan.
   ///
   /// The `connectState` stream is emitted with `connecting` while the
   /// connection is in progress, and `connected` if the connection is
@@ -138,7 +138,7 @@ class BluetoothPrintPlus {
 
   /// Sends data to the connected Bluetooth device.
   ///
-  /// The data to be sent should be provided as a `Uint8List`.
+  /// [data] The data to be sent should be provided as a `Uint8List`.
   ///
   /// This method uses a method channel to invoke the native 'write' method,
   /// passing the data as an argument.
@@ -199,38 +199,30 @@ class BluetoothPrintPlus {
   ///
   /// If the scan fails (for example, if the device does not have Bluetooth
   /// capabilities), the stream will emit an error and then close.
-  static Stream<BluetoothDevice> _scan({Duration? timeout}) async* {
+  static Stream<BluetoothDevice> _scan({required Duration timeout}) async* {
     // Emit to isScanning
     _isScanning.add(true);
     // Clear scan results list
     _scanResults.add(<BluetoothDevice>[]);
     // invoke startScan method
-    await _methodChannel
-        .invokeMethod('startScan')
-        .onError((error, stackTrace) => _isScanning.add(false));
-    if (timeout != null) {
-      _scanTimeout = Timer(timeout, stopScan);
-    }
-
+    await _methodChannel.invokeMethod('startScan').onError((error, stackTrace) {
+      _stopScanPill.add(null);
+      _isScanning.add(false);
+    });
+    final killStreams = <Stream>[]..add(_stopScanPill);
+    killStreams.add(Rx.timer(null, timeout));
     yield* BluetoothPrintPlus._methodStream.stream
         .where((m) => m.method == "ScanResult")
         .map((m) => m.arguments)
+        .takeUntil(Rx.merge(killStreams))
+        .doOnDone(stopScan)
         .map((map) {
       final device = BluetoothDevice.fromJson(Map<String, dynamic>.from(map));
-      final List<BluetoothDevice> list = _scanResults.value;
-      int newIndex = -1;
-      list.asMap().forEach((index, e) {
-        if (e.address == device.address) {
-          newIndex = index;
-        }
-      });
-
-      if (newIndex != -1) {
-        list[newIndex] = device;
-      } else {
-        list.add(device);
-      }
-      _scanResults.add(list);
+      final scanResults = _scanResults.value;
+      int index = scanResults
+          .indexWhere((element) => element.address == device.address);
+      index == -1 ? scanResults.add(device) : scanResults[index] = device;
+      _scanResults.add(scanResults);
       return device;
     });
   }
