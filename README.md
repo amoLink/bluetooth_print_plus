@@ -1,8 +1,5 @@
-<span style="white-space: nowrap;">
-[![pub package](https://img.shields.io/pub/v/bluetooth_print_plus.svg)](https://pub.dartlang.org/packages/bluetooth_print_plus)
-[![GitHub stars](https://img.shields.io/github/stars/amoLink/bluetooth_print_plus?logo=github&style=flat-square)](https://github.com/amoLink/bluetooth_print_plus)
-[![GitHub forks](https://img.shields.io/github/forks/amoLink/bluetooth_print_plus?logo=github&style=flat-square)](https://github.com/amoLink/bluetooth_print_plus)
-</span>
+[![pub package](https://img.shields.io/pub/v/bluetooth_print_plus.svg)](https://pub.dartlang.org/packages/bluetooth_print_plus)[![GitHub stars](https://img.shields.io/github/stars/amoLink/bluetooth_print_plus?logo=github&style=flat-square)](https://github.com/amoLink/bluetooth_print_plus)[![GitHub forks](https://img.shields.io/github/forks/amoLink/bluetooth_print_plus?logo=github&style=flat-square)](https://github.com/amoLink/bluetooth_print_plus)
+
 
 ## Introduction
 
