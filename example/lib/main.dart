@@ -38,7 +38,7 @@ class _HomePageState extends State<HomePage> {
   late StreamSubscription<ConnectState> _connectStateSubscription;
   late StreamSubscription<Uint8List> _receivedDataSubscription;
   late StreamSubscription<List<BluetoothDevice>> _scanResultsSubscription;
-  late List<BluetoothDevice> _scanResults;
+  List<BluetoothDevice> _scanResults = [];
 
   @override
   void initState() {
@@ -55,7 +55,6 @@ class _HomePageState extends State<HomePage> {
     _receivedDataSubscription.cancel();
     _scanResultsSubscription.cancel();
     _scanResults.clear();
-    _device = null;
   }
 
   Future<void> initBluetoothPrintPlusListen() async {
