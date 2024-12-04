@@ -1,5 +1,10 @@
-[![pub package](https://img.shields.io/pub/v/bluetooth_print_plus.svg)](https://pub.dartlang.org/packages/bluetooth_print_plus)
-
+<span style="white-space: nowrap;">
+    [![pub package](https://img.shields.io/pub/v/bluetooth_print_plus.svg)](https://pub.dartlang.org/packages/bluetooth_print_plus)
+    [![GitHub stars](https://img.shields.io/github/stars/amoLink/bluetooth_print_plus?logo=github&style=flat-square)](https://github.com/amoLink/bluetooth_print_plus)
+    [![GitHub forks](https://img.shields.io/github/forks/amoLink/bluetooth_print_plus?logo=github&style=flat-square)](https://github.com/amoLink/bluetooth_print_plus)
+    [**QQ group**](http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=srMhoE9RiFhIrhDoJB_jZCsaTvw09KaD&authKey=k4fAypkX3gSG7REanSfi0OZCXJxprJdnZ1y2BU2QAMbgOt0T%2F1hIr%2BikbO3kQPJc&noverify=0&group_code=904457621) 
+    [**TG group**](https://t.me/+a7KAkNjHFS81MGNi)
+</span>
 ## Introduction
 
 Bluetooth Print Plus is a Bluetooth plugin used to print thermal printers in [Flutter](https://flutter.dev), a new mobile SDK to help developers build bluetooth thermal printer apps for iOS and Android.
