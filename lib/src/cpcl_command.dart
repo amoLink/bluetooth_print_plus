@@ -54,6 +54,7 @@ class CpclCommand {
   /// Print a text on the printer.
   ///
   /// [content] is the text content to be printed.
+  /// [size] Font size identification. Defaults to 0.
   /// [x] and [y] are the coordinates of the top left corner of the text.
   /// Defaults to 0.
   /// [xMulti] and [yMulti] are the multiplication factors for the x and y
@@ -63,6 +64,7 @@ class CpclCommand {
   /// false.
   Future<void> text({
     required String content,
+    int size = 0,
     int x = 0,
     int y = 0,
     int xMulti = 1,
@@ -73,6 +75,7 @@ class CpclCommand {
     int rota = EnumTool.getRotation(rotation);
     Map<String, dynamic> params = {
       "content": content,
+      "size": size,
       "x": x,
       "y": y,
       "xMulti": xMulti,

@@ -95,17 +95,19 @@ public class CpclCommandPlugin implements FlutterPlugin, MethodCallHandler, Requ
             case "text":
                 Integer xMulti = call.argument("xMulti");
                 Integer yMulti = call.argument("yMulti");
+                Integer size = call.argument("size");
                 Boolean bold = call.argument("bold");
                 assert x != null;
                 assert y != null;
                 assert xMulti != null;
                 assert yMulti != null;
+                assert size != null;
                 assert bold != null;
                 if (bold) {
                     this.cpclCommand.addSETBOLD(1);
                 }
                 this.cpclCommand.addSetmag(xMulti, yMulti);
-                this.cpclCommand.addText(FONT_3, x, y, content);
+                this.cpclCommand.addText(FONT_3, size, x, y, content);
                 if (bold) {
                     this.cpclCommand.addSETBOLD(0);
                 }
@@ -123,6 +125,7 @@ public class CpclCommandPlugin implements FlutterPlugin, MethodCallHandler, Requ
                 Boolean vertical = call.argument("vertical");
                 assert vertical != null;
                 assert height != null;
+                assert width != null;
                 assert x != null;
                 assert y != null;
                 assert codeType != null;
@@ -154,7 +157,7 @@ public class CpclCommandPlugin implements FlutterPlugin, MethodCallHandler, Requ
                         barcodeType = CpclCommand.CPCLBARCODETYPE.CODE128;
                         break;
                 }
-                this.cpclCommand.addBarcode(command, barcodeType, height, x, y, content);
+                this.cpclCommand.addBarcode(command, barcodeType, width, CpclCommand.BARCODERATIO.Point2, height, x, y, content);
                 result.success(true);
                 break;
             case "line":

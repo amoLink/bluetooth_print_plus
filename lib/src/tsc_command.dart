@@ -40,7 +40,8 @@ class TscCommand {
   /// consecutive printed labels. Ensure the printer supports the specified
   /// gap value to avoid any issues.
   Future<void> gap(int gap) async {
-    await methodChannel.invokeMethod<void>('gap');
+    Map<String, dynamic> params = {"gap": gap};
+    await methodChannel.invokeMethod<void>('gap', params);
   }
 
   /// Sets the printing speed of the printer. The value is in the range [25, 250].
