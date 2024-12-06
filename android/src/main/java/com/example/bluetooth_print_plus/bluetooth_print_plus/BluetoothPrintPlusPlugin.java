@@ -57,7 +57,6 @@ public class BluetoothPrintPlusPlugin
   private static final int REQUEST_LOCATION_PERMISSIONS = 1452;
   private final Object initializationLock = new Object();
   private Context context;
-  private Application application;
   private Activity activity;
   private Result pendingResult;
   public PortManager portManager = null;
@@ -122,7 +121,6 @@ public class BluetoothPrintPlusPlugin
     synchronized (initializationLock) {
       LogUtils.i(TAG, "setup");
       this.activity = activity;
-      this.application = application;
       this.context = application;
       channel = new MethodChannel(messenger, "bluetooth_print_plus/methods");
       channel.setMethodCallHandler(this);
@@ -141,6 +139,7 @@ public class BluetoothPrintPlusPlugin
       mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
       activityBinding.addRequestPermissionsResultListener(this);
+      initBroadcast();
     }
   }
 
@@ -155,7 +154,6 @@ public class BluetoothPrintPlusPlugin
     stateChannel.setStreamHandler(null);
     stateChannel = null;
     mBluetoothAdapter = null;
-    application = null;
   }
 
   @Override
@@ -290,7 +288,6 @@ public class BluetoothPrintPlusPlugin
   }
 
   private void startScan() throws IllegalStateException {
-    initBroadcast();
     mBluetoothAdapter.startDiscovery();
   }
 
