@@ -164,4 +164,9 @@ class CpclCommand {
   Future<void> print() async {
     await methodChannel.invokeMethod<void>('print');
   }
+
+  // After printing is complete, locate it at the top of the next page.
+  Future<void> form() async {
+    await methodChannel.invokeMethod<void>('form');
+  }
 }

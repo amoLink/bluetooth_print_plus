@@ -10,9 +10,6 @@ import android.graphics.BitmapFactory;
 import androidx.annotation.NonNull;
 
 import com.gprinter.command.CpclCommand;
-import com.gprinter.command.LabelCommand;
-
-import java.util.Objects;
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.plugin.common.MethodCall;
@@ -72,6 +69,10 @@ public class CpclCommandPlugin implements FlutterPlugin, MethodCallHandler, Requ
                 break;
             case "print":
                 this.cpclCommand.addPrint();
+                result.success(true);
+                break;
+            case "form":
+                this.cpclCommand.addForm();
                 result.success(true);
                 break;
             case "size":
