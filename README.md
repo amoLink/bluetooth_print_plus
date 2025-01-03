@@ -11,10 +11,10 @@
     <img src="https://img.shields.io/github/forks/amoLink/bluetooth_print_plus?logo=github&style=flat-square" alt="GitHub forks">
   </a>
   <a href="http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=srMhoE9RiFhIrhDoJB_jZCsaTvw09KaD&authKey=k4fAypkX3gSG7REanSfi0OZCXJxprJdnZ1y2BU2QAMbgOt0T%2F1hIr%2BikbO3kQPJc&noverify=0&group_code=904457621">
-    <img src="https://github.com/amoLink/bluetooth_print_plus/blob/main/img/qq_group.png" alt="qq_group" title="qq_group">
+    <img src="https://github.com/amoLink/bluetooth_print_plus/blob/main/img/qq_group.png?raw=true" alt="qq_group" title="qq_group">
   </a>
   <a href="https://t.me/+a7KAkNjHFS81MGNi">
-    <img src="https://github.com/amoLink/bluetooth_print_plus/blob/main/img/tg_group.png" alt="tg_group" title="tg_group">
+    <img src="https://github.com/amoLink/bluetooth_print_plus/blob/main/img/tg_group.png?raw=true" alt="tg_group" title="tg_group">
   </a>
 </span>
 
@@ -66,7 +66,7 @@ Bluetooth Print Plus is a Bluetooth plugin used to print thermal printers in [Fl
 dependencies:
   flutter:
     sdk: flutter
-  bluetooth_print_plus: ^2.4.3
+  bluetooth_print_plus: ^2.4.5
 ```
 
 ### Add permissions for Bluetooth

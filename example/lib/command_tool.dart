@@ -70,7 +70,8 @@ class CommandTool {
     await cpclCommand.cleanCommand();
     await cpclCommand.size(width: 76 * 8, height: 76 * 8);
     await cpclCommand.image(image: image, x: 10, y: 10);
-    await cpclCommand.form(); // After printing is complete, locate it at the top of the next page.
+    await cpclCommand
+        .form(); // After printing is complete, locate it at the top of the next page.
     await cpclCommand.print();
     final cmd = await cpclCommand.getCommand();
     return cmd;
@@ -86,7 +87,8 @@ class CommandTool {
     await cpclCommand.text(
         content: "不辞长作岭南人", x: 10, y: 330, bold: true, xMulti: 2, yMulti: 2);
     await cpclCommand.line(x: 300, y: 100, endX: 360, endY: 500);
-    await cpclCommand.form(); // After printing is complete, locate it at the top of the next page.
+    await cpclCommand
+        .form(); // After printing is complete, locate it at the top of the next page.
     await cpclCommand.print();
     final cmd = await cpclCommand.getCommand();
     return cmd;
