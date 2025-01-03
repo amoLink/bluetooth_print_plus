@@ -99,9 +99,12 @@
         int endY = [[argumentsDict valueForKey:@"endY"] intValue];
         [self.cpclCommand addLineWithXstart:x withYstart:y withXend:endX withYend:endY withWidth:width];
         result(@(YES));
-    }
-    else if([@"print" isEqualToString:call.method]) {
+    } else if([@"print" isEqualToString:call.method]) {
         [self.cpclCommand addPrint];
+        result(@(YES));
+    } else if([@"form" isEqualToString:call.method]) {
+//        @"FORM\r\n"
+//        [self.cpclCommand ];
         result(@(YES));
     }
     else {

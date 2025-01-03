@@ -87,7 +87,9 @@ public class EscCommandPlugin implements FlutterPlugin, MethodCallHandler, Reque
                 result.success(true);
                 break;
             case "print":
-                this.getEscCommand().addPrintAndFeedLines((byte) 4);
+                Integer feedLines = call.argument("feedLines");
+                assert feedLines != null;
+                this.getEscCommand().addPrintAndFeedLines((byte) feedLines.intValue());
                 result.success(true);
                 break;
             case "text":
