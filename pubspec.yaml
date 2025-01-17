@@ -44,8 +44,8 @@ flutter:
       macos:
         pluginClass: BluetoothPrintPlusPlugin
       web:
-        pluginClass: BluetoothPrintPlusWeb
-        fileName: bluetooth_print_plus_web.dart
+#        pluginClass: BluetoothPrintPlusWeb
+#        fileName: bluetooth_print_plus_web.dart
 
   # To add assets to your plugin package, add an assets section, like this:
   # assets:
