@@ -113,8 +113,8 @@ public class EscCommandPlugin implements FlutterPlugin, MethodCallHandler, Reque
                         break;
                 }
                 this.getEscCommand().addText(content);
-                this.getEscCommand().addSetCharcterSize(EscCommand.WIDTH_ZOOM.MUL_1, EscCommand.HEIGHT_ZOOM.MUL_1);
-                this.getEscCommand().addSelectPrintModes(EscCommand.FONT.FONTA, EscCommand.ENABLE.OFF, EscCommand.ENABLE.OFF, EscCommand.ENABLE.OFF, EscCommand.ENABLE.OFF);
+                // this.getEscCommand().addSetCharcterSize(EscCommand.WIDTH_ZOOM.MUL_1, EscCommand.HEIGHT_ZOOM.MUL_1);
+                // this.getEscCommand().addSelectPrintModes(EscCommand.FONT.FONTA, EscCommand.ENABLE.OFF, EscCommand.ENABLE.OFF, EscCommand.ENABLE.OFF, EscCommand.ENABLE.OFF);
                 result.success(true);
                 break;
             case "code128":
@@ -123,7 +123,6 @@ public class EscCommandPlugin implements FlutterPlugin, MethodCallHandler, Reque
                 assert width != null;
                 assert height != null;
                 assert alignment != null;
-                this.getEscCommand().addSelectJustification(align);
                 this.getEscCommand().addSelectJustification(align);
                 this.getEscCommand().addSetBarcodeWidth(width.byteValue());
                 this.getEscCommand().addSetBarcodeHeight(height.byteValue());
@@ -143,6 +142,7 @@ public class EscCommandPlugin implements FlutterPlugin, MethodCallHandler, Reque
                         break;
                 }
                 this.getEscCommand().addSelectPrintingPositionForHRICharacters(position);
+                this.getEscCommand().addCODE128(content);
                 result.success(true);
                 break;
             case "qrCode":
