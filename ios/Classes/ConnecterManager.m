@@ -98,6 +98,10 @@ static dispatch_once_t once;
  *  @param discover 发现的设备
  */
 -(void)scanForPeripheralsWithServices:(nullable NSArray<CBUUID *> *)serviceUUIDs options:(nullable NSDictionary<NSString *, id> *)options discover:(void(^_Nullable)(CBPeripheral *_Nullable peripheral,NSDictionary<NSString *, id> *_Nullable advertisementData,NSNumber *_Nullable RSSI))discover {
+    if (_bleConnecter == nil) {
+        self.currentConnMethod = BLUETOOTH;
+        [self initConnecter:self.currentConnMethod];
+    }
     [_bleConnecter scanForPeripheralsWithServices:serviceUUIDs options:options discover:discover];
 }
 
@@ -108,11 +112,6 @@ static dispatch_once_t once;
 -(void)didUpdateState:(void(^)(NSInteger state))state {
     self.updateCenterBluetoothState = state;
     [self updateBluetoothState];
-    if (_bleConnecter == nil) {
-        self.currentConnMethod = BLUETOOTH;
-        [self initConnecter:self.currentConnMethod];
-    }
-    [_bleConnecter didUpdateState:self.updateState];
 }
 
 -(void)initConnecter:(ConnectMethod)connectMethod {
@@ -142,6 +141,10 @@ static dispatch_once_t once;
  *  连接
  */
 -(void)connectPeripheral:(CBPeripheral *)peripheral options:(nullable NSDictionary<NSString *,id> *)options timeout:(NSUInteger)timeout connectBlack:(void(^_Nullable)(ConnectState state)) connectState{
+    if (_bleConnecter == nil) {
+        self.currentConnMethod = BLUETOOTH;
+        [self initConnecter:self.currentConnMethod];
+    }
     self.peripheral = peripheral;
     self.state = connectState;
     [self updateConnectState];
